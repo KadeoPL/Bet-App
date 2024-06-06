@@ -25,7 +25,7 @@ export default function UsersList(){
       <ul>
         {users.map(user => (
           <li key={user.id}>
-            {user.login} {user.password} {user.isAdmin ? 'Admin' : 'Nie admin'}
+            {user.login} {user.password} {user.isAdmin ? 'Admin' : 'Nie admin'} {(user.points === null) ? 'Nie podano wartości' : user.points}
           </li>
         ))}
       </ul>
