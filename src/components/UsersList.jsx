@@ -9,7 +9,6 @@ export default function UsersList(){
       try {
         const users = await getUsers()
         setUsers(users)
-        console.log(users)
       } catch (error) {
         console.error('Error fetching users:', error)
       }

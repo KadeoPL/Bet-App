@@ -1,10 +1,25 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { getUsers } from "../services/userService"
 
 export default function Login(){
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [users, setUsers] = useState([])
+    
+    useEffect(() => {
+        async function fetchData() {
+          try {
+            const users = await getUsers()
+            setUsers(users)
+          } catch (error) {
+            console.error('Error fetching users:', error)
+          }
+        }
+    
+        fetchData()
+      }, [])
     
     function onButtonClick(){
         setLoginError('');
@@ -17,6 +32,18 @@ export default function Login(){
         if(password === ''){
             setPasswordError('Please enter your password')
         }
+
+        users.forEach(user => {
+            if (user.login === login) {
+              if (user.password === password) {
+                 console.log('Logged');
+              } else {
+                setPasswordError('Incorret password, try again!');
+              }
+            } else {
+                setLoginError('Incorret login, try again!')
+            }
+          });
     }
 
     return (
