@@ -20,7 +20,7 @@ export default function UsersList(){
   return (
     <div>
       <h2>Users</h2>
-      <button>Dodaj użytkownika</button>
+      <button>Add user</button>
       <ul>
         {users.map(user => (
           <li key={user.id}>
