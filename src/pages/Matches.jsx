@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { getMatches } from "../services/matchesService"
+import SidebarNav from "../components/Sidebar"
 
 export default function Matches(){
     const [matches, setMatches] = useState([])
@@ -19,6 +20,7 @@ export default function Matches(){
     
     return(
         <>
+            <SidebarNav/>
             <div>
                 {matches.map(match => (
                     <div key={match.id} className="flex flex-row">
