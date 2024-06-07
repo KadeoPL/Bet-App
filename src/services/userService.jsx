@@ -1,9 +1,9 @@
 import { supabase } from '../utils/supabaseClient'
 
-export async function addUser() {
+export async function addUser(id, login, password, isAdmin) {
     const { data, error } = await supabase
       .from('users')
-      .insert([{ id: 1, login: 'johndoe', password: 'abc123', isAdmin: true, points: 0}])
+      .insert([{ id: id, login: login, password: password, isAdmin: isAdmin, points: 0}])
   
     if (error) {
       console.error('Error adding user:', error)

@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react"
 import { getUsers } from "../services/userService"
+import { addUser } from "../services/userService"
+import { Button } from "flowbite-react";
+import SidebarNav from "../components/Sidebar";
 
 export default function UsersList(){
     const [users, setUsers] = useState([])
@@ -18,9 +21,10 @@ export default function UsersList(){
   }, [])
 
   return (
-    <div>
-      <h2>Users</h2>
-      <button>Add user</button>
+    <> 
+      <SidebarNav />
+      <h2 className="text-3xl font-bold underline">Users</h2>
+      <Button pill gradientDuoTone="pinkToOrange" onClick={addUser}>Add user</Button>
       <ul>
         {users.map(user => (
           <li key={user.id}>
@@ -28,6 +32,6 @@ export default function UsersList(){
           </li>
         ))}
       </ul>
-    </div>
+    </>
   )
 }
