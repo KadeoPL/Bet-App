@@ -1,12 +1,16 @@
-import './App.css'
-import Login from './components/Login'
+import { useContext } from 'react';
+import { UserContext } from './context/UserContext.jsx';
+import Home from './components/Home';
+import Login from './components/Login';
 
 function App() {
+  const { user } = useContext(UserContext);
+
   return (
     <>
-      <Login/>
+      {user ? <Home /> : <Login />}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
