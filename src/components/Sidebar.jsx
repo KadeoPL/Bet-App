@@ -13,11 +13,9 @@ export default function SidebarNav (){
             <Sidebar.Item as={Link} to="/Home">
               Home
             </Sidebar.Item>
-            {user.isAdmin &&
-               <Sidebar.Item as={Link} to="/Matches">
+            <Sidebar.Item as={Link} to="/Matches">
                Mecze
-                </Sidebar.Item> 
-            }
+             </Sidebar.Item>  
             <Sidebar.Item as={Link} to="/UsersList">
               Użytkownicy
             </Sidebar.Item>
