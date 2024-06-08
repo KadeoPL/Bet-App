@@ -72,7 +72,7 @@ export default function Login() {
       </div>
       <div>
         <input
-          type="button"
+          type="submit"
           onClick={onButtonClick}
           value="Log in"
         />

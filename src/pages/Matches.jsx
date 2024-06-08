@@ -5,6 +5,8 @@ import MatchBetForm from "../components/MatchBetForm"
 
 export default function Matches(){
     const [matches, setMatches] = useState([])
+
+    console.log(localStorage)
     
     useEffect(() => {
         const fetchMatches = async () => {
