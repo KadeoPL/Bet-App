@@ -1,4 +1,3 @@
-import { Sidebar } from "flowbite-react";
 import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -7,23 +6,37 @@ export default function SidebarNav (){
     const { user, logout } = useContext(UserContext);
 
     return (
-        <Sidebar>
-        <Sidebar.Items>
-          <Sidebar.ItemGroup>
-            <Sidebar.Item as={Link} to="/Home">
-              Home
-            </Sidebar.Item>
-            <Sidebar.Item as={Link} to="/Matches">
-               Mecze
-             </Sidebar.Item>  
-            <Sidebar.Item as={Link} to="/UsersList">
-              Użytkownicy
-            </Sidebar.Item>
-            <Sidebar.Item>
-              {user && <button onClick={logout}>Logout</button>}
-            </Sidebar.Item>
-          </Sidebar.ItemGroup>
-        </Sidebar.Items>
-      </Sidebar>
+      <div>
+        <div className='h-screen bg-indigo-950 text-white p-10'>
+          <nav>
+            <ul className='space-y-6 '>
+              <li>
+                <Link
+                to="/"
+                className='hover:text-indigo-400'
+                >Home</Link>
+              </li>
+              <li>
+                <Link
+                to="/matches"
+                className='hover:text-indigo-400'
+                >Mecze</Link>
+              </li>
+              <li>
+                <Link
+                to="/usersList"
+                className='hover:text-indigo-400'
+                >Użytkownicy</Link>
+              </li>
+              <li>
+                <Link
+                to="/"
+                className='hover:text-indigo-400'
+                >{user && <button onClick={logout}>Logout</button>}</Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
     )
 }
