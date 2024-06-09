@@ -51,32 +51,36 @@ export default function Login() {
   }
 
   return (
-    <>
-      <div>
-        <input
-          type="text"
-          value={loginInput}
-          placeholder="Enter your login"
-          onChange={(ev) => setLoginInput(ev.target.value)}
-        />
-        {loginError && <p>{loginError}</p>}
+     <div className='flex items-center justify-center w-screen'>
+      <div className='flex flex-col gap-5'>
+        <div >
+          <input
+            className='rounded-lg'
+            type="text"
+            value={loginInput}
+            placeholder="Enter your login"
+            onChange={(ev) => setLoginInput(ev.target.value)}
+          />
+          {loginError && <p className='text-red-400'>{loginError}</p>}
+        </div>
+        <div>
+          <input
+            className='rounded-lg'
+            type="password"
+            value={passwordInput}
+            placeholder="Enter your password"
+            onChange={(ev) => setPasswordInput(ev.target.value)}
+          />
+          {passwordError && <p className='text-red-400'>{passwordError}</p>}
+        </div>
+        <div className='bg-indigo-950 text-white text-center p-4 rounded-lg hover:bg-indigo-800'>
+          <input
+            type="submit"
+            onClick={onButtonClick}
+            value="Log in"
+          />
+        </div>
       </div>
-      <div>
-        <input
-          type="password"
-          value={passwordInput}
-          placeholder="Enter your password"
-          onChange={(ev) => setPasswordInput(ev.target.value)}
-        />
-        {passwordError && <p>{passwordError}</p>}
-      </div>
-      <div>
-        <input
-          type="submit"
-          onClick={onButtonClick}
-          value="Log in"
-        />
-      </div>
-    </>
+    </div> 
   );
 }
