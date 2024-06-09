@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
@@ -11,32 +11,39 @@ export default function SidebarNav (){
           <nav>
             <ul className='space-y-6 '>
               <li>
-                <Link
-                to="/"
-                className='hover:text-indigo-400'
-                >Home</Link>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) => isActive ? 'hover:text-indigo-400 text-indigo-400' : 'hover:text-indigo-400'}
+                >Home</NavLink>
               </li>
               <li>
-                <Link
-                to="/matches"
-                className='hover:text-indigo-400'
-                >Mecze</Link>
+                <NavLink
+                  to="/matches"
+                  className={({ isActive }) => isActive ? 'hover:text-indigo-400 text-indigo-400' : 'hover:text-indigo-400'}
+                >Mecze</NavLink>
               </li>
               <li>
-                <Link
-                to="/usersList"
-                className='hover:text-indigo-400'
-                >Użytkownicy</Link>
+                <NavLink
+                  to="/usersList"
+                  className={({ isActive }) => isActive ? 'hover:text-indigo-400 text-indigo-400' : 'hover:text-indigo-400'}
+                >Użytkownicy</NavLink>
               </li>
               <li>
-                <Link
-                to="/"
-                className='hover:text-indigo-400'
-                >{user && <button onClick={logout}>Logout</button>}</Link>
+                {user && (
+                  <button 
+                    onClick={() => {
+                      logout();
+                      window.location.href = "/";
+                    }} 
+                    className='hover:text-indigo-400'
+                  >
+                    Logout
+                  </button>
+                )}
               </li>
             </ul>
           </nav>
         </div>
       </div>
-    )
+    );
 }
