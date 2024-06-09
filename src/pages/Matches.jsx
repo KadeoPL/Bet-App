@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react"
-import { getMatches } from "../services/matchesService"
-import SidebarNav from "../components/Sidebar"
-import MatchBetForm from "../components/MatchBetForm"
+import { useEffect, useState } from "react";
+import { getMatches } from "../services/matchesService.jsx";
+import SidebarNav from "../components/Sidebar";
+import MatchBetForm from "../components/MatchBetForm";
 
 export default function Matches(){
-    const [matches, setMatches] = useState([])
-
-    console.log(localStorage)
+    const [matches, setMatches] = useState([]);
     
     useEffect(() => {
         const fetchMatches = async () => {
@@ -19,11 +17,11 @@ export default function Matches(){
         };
 
         fetchMatches();
-    }, [])
+    }, []);
     
-    return(
+    return (
         <>
-            <SidebarNav/>
+            <SidebarNav />
             <div>
                 {matches.map(match => (
                     <div key={match.id} className="flex flex-row">
@@ -32,5 +30,5 @@ export default function Matches(){
                 ))}
             </div>
         </>
-    )
+    );
 }
