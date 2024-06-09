@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, request
 from supabase import create_client
 
 load_dotenv()
@@ -30,6 +30,11 @@ def get_matches():
     )
     return response.model_dump_json()
 
+@app.route("/matches", methods=["POST"])
+def post_matches():
+    matches = request.get_json()
+    for match in matches:
+        print(match)
 
 if __name__ == "__main__":
     app.run(debug=True)
