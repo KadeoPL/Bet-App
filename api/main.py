@@ -13,7 +13,7 @@ supabase = create_client(url, key)
 app = Flask(__name__)
 
 
-@app.route("/matches", methods=["GET"])
+@app.route("/main", methods=["GET"])
 def get_matches():
     response = (
         supabase.table("matches")
