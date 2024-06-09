@@ -20,6 +20,7 @@ def get_matches():
     response = (
         supabase.table("matches")
         .select(
+            "id",
             "team_one:teams!matches_team_one_fkey(name, flag)",
             "team_two:teams!matches_team_two_fkey(name, flag)",
             "date",
@@ -35,8 +36,7 @@ def get_matches():
 @app.route("/api/matches", methods=["POST"])
 def post_matches():
     matches = request.get_json()
-    for match in matches:
-        print(match)
+   
 
 if __name__ == "__main__":
     app.run()
