@@ -2,6 +2,8 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, request
+from flask_cors import CORS
+
 from supabase import create_client
 
 load_dotenv()
@@ -11,13 +13,14 @@ key = os.getenv("SUPABASE_KEY")
 supabase = create_client(url, key)
 
 app = Flask(__name__)
+CORS(app)
 
-
-@app.route("/matches", methods=["GET"])
+@app.route("/api/matches", methods=["GET"])
 def get_matches():
     response = (
         supabase.table("matches")
         .select(
+            "id",
             "team_one:teams!matches_team_one_fkey(name, flag)",
             "team_two:teams!matches_team_two_fkey(name, flag)",
             "date",
@@ -30,11 +33,14 @@ def get_matches():
     )
     return response.model_dump_json()
 
-@app.route("/matches", methods=["POST"])
+@app.route("/api/matches", methods=["POST"])
 def post_matches():
     matches = request.get_json()
-    for match in matches:
-        print(match)
+    team_one_id = supabase.table("teams").select('id').eq("name", matches["team_one"]).execute().model_dump()["data"][0]["id"]
+    team_two_id = supabase.table("teams").select('id').eq("name", matches["team_one"]).execute().model_dump()["data"][0]["id"]
+    
+    return "git"
+   
 
 if __name__ == "__main__":
     app.run(debug=True)
