@@ -36,7 +36,11 @@ def get_matches():
 @app.route("/api/matches", methods=["POST"])
 def post_matches():
     matches = request.get_json()
+    team_one_id = supabase.table("teams").select('id').eq("name", matches["team_one"]).execute().model_dump()["data"][0]["id"]
+    team_two_id = supabase.table("teams").select('id').eq("name", matches["team_one"]).execute().model_dump()["data"][0]["id"]
+    
+    return "git"
    
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

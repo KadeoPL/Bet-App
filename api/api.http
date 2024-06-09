@@ -1,1 +1,13 @@
-http://localhost:5000/matches
+http://localhost:5000/api/matches
+
+#######################
+POST http://localhost:5000/api/matches
+Content-Type: application/json
+
+{
+    "date": "2024-06-14",
+    "time": "21:00:00",
+    "team_one": "Francja",
+    "team_two": "Scotland",
+    "group": "A"
+}
