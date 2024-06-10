@@ -15,6 +15,7 @@ export default function Login() {
       try {
         const users = await getUsers();
         setUsers(users);
+        console.log(users);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -23,36 +24,35 @@ export default function Login() {
     fetchData();
   }, []);
 
-  function onButtonClick() {
+  function onButtonClick(event) {
+    event.preventDefault();
+
     setLoginError('');
     setPasswordError('');
 
     if (loginInput === '') {
       setLoginError('Please enter your login');
-      return;
-    }
-
-    if (passwordInput === '') {
+    } else if (passwordInput === ''){
       setPasswordError('Please enter your password');
-      return;
-    }
-
-    const user = users.find(user => user.login === loginInput);
-
-    if (user) {
-      if (user.password === passwordInput) {
-        login(user);
-      } else {
-        setPasswordError('Incorrect password, try again!');
-      }
     } else {
-      setLoginError('Incorrect login, try again!');
+      
+      const user = users.find(user => user.login === loginInput);
+
+      if (user) {
+        if (user.password === passwordInput) {
+          login(user);
+        } else {
+          setPasswordError('Incorrect password, try again!');
+        }
+      } else {
+        setLoginError('Incorrect login, try again!');
+      }
     }
   }
 
   return (
      <div className='flex items-center justify-center w-screen'>
-      <div className='flex flex-col gap-5'>
+      {/* <div className='flex flex-col gap-5'>
         <div >
           <input
             className='rounded-lg'
@@ -80,7 +80,31 @@ export default function Login() {
             value="Log in"
           />
         </div>
-      </div>
+      </div> */}
+      <form>
+          <input
+                className='rounded-lg'
+                type="text"
+                value={loginInput}
+                placeholder="Enter your login"
+                onChange={(ev) => setLoginInput(ev.target.value)}
+              />
+              {loginError && <p className='text-red-400'>{loginError}</p>}
+          <input
+                className='rounded-lg'
+                type="password"
+                value={passwordInput}
+                placeholder="Enter your password"
+                onChange={(ev) => setPasswordInput(ev.target.value)}
+              />
+              {passwordError && <p className='text-red-400'>{passwordError}</p>}
+
+          <input
+                type="submit"
+                onClick={onButtonClick}
+                value="Log in"
+            />
+      </form>    
     </div> 
   );
 }
