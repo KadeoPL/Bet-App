@@ -81,7 +81,7 @@ def post_matches():
     return jsonify({"status": "ok"})
 
 
-@app.route("/api/teams/", methods=["POST"])
+@app.route("/api/teams", methods=["POST"])
 def post_teams():
     data = request.get_json()
     for group in data:
@@ -106,8 +106,8 @@ def post_predictions():
         data.get("team_two_goals"),
         data.get("result")
     )
-    already_predicted = supabase.table("predictions").select("id").eq("match_id", match_id).eq("user_id", user_id).execute()
-    if already_predicted.count:
+    already_predicted = supabase.table("predictions").select("id", count="exact").eq("match_id", match_id).eq("user_id", user_id).execute()
+    if already_predicted.count > 0:
         to_update = dict()
         if team_one_goals and team_two_goals:
             to_update["team_one_goals"] = team_one_goals
@@ -136,7 +136,8 @@ def post_predictions():
 def update_result():
     data = request.get_json()
     match_id, team_one_goals, team_two_goals = data["match_id"], data["team_one_goals"], data["team_two_goals"]
-    result = supabase.table("predictions").update({"team_one_goals": team_one_goals, "team_two_goals": team_two_goals}).eq("match_id", match_id).execute()
+    result = 1 if team_one_goals > team_two_goals else 2 if team_one_goals < team_two_goals else 0
+    supabase.table("matches").update({"team_one_goals": team_one_goals, "team_two_goals": team_two_goals, "result": result}).eq("id", match_id).execute()
     users_predictions = (
         supabase.table("predictions")
         .select(
@@ -148,8 +149,8 @@ def update_result():
         .eq("match_id", match_id)
         .execute()
     )
-    for user_prediction in users_predictions:
-        user_id = user_prediction.get("result")
+    for user_prediction in users_predictions.data:
+        user_id = user_prediction.get("user_id")
         user_result = user_prediction.get("result")
         user_team_one_goals = user_prediction.get("team_one_goals")
         user_team_two_goals = user_prediction.get("team_two_goals")
@@ -160,7 +161,12 @@ def update_result():
         if user_team_one_goals == team_one_goals and user_team_two_goals == team_two_goals:
             points += 3
         
-        # user_points = 
+        user_points = supabase.table('users').select('points').eq("id", user_id).execute()
+        user_points = user_points.data[0]["points"]
+        user_points += points
+        result = supabase.table("users").update({"points": user_points}).eq("id", user_id).execute()
+        print(result)
+    return "jest git"
 
 if __name__ == "__main__":
     app.run(debug=True)

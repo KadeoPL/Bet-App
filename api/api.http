@@ -2,14 +2,25 @@ http://localhost:5000/api/matches
 
 ########################
 
+POST http://localhost:5000/api/result
+Content-Type: application/json
+
+{
+  "match_id": 14,
+  "team_one_goals": 2,
+  "team_two_goals": 0
+}
+
+########################
+
 POST http://localhost:5000/api/predictions
 Content-Type: application/json
 
 {
-  "match_id": 15,
+  "match_id": 14,
   "user_id": 2,
-  "team_one_goals": 1,
-  "team_two_goals": 2,
+  "team_one_goals": 2,
+  "team_two_goals": 0,
   "result": 1
 }
 
