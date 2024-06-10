@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { addPrediction } from "../services/matchesService";
+import { addPrediction} from "../services/matchesService";
 
 export default function MatchBetForm({ matchData }) {
     const { user } = useContext(UserContext);

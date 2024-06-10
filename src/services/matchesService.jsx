@@ -10,7 +10,7 @@ export async function getMatches() {
             console.log(error)
           }
           
-      }
+}
 
 export async function addPrediction(data){
   console.log(data);
@@ -21,4 +21,16 @@ export async function addPrediction(data){
   .catch(error => {
       console.error('Error sending data:', error);
   });
+}
+
+export async function getPrediction() {
+  try {
+      const response = await axios.get(`https://bet-app-livid.vercel.app/api/predictions`);
+      const predictionData = response.data;
+      console.log(predictionData.data);
+      return predictionData.data
+  } catch (error) {
+    console.log(error)
+  }
+  
 }
