@@ -7,14 +7,14 @@ export default function SidebarNav (){
 
     return (
       <div>
-        <div className='h-screen bg-indigo-950 text-white p-10'>
+        <div className='h-screen bg-blue text-white p-10'>
           <nav>
             <ul className='space-y-6 '>
               <li>
                 <NavLink
                   to="/"
                   className={({ isActive }) => isActive ? 'hover:text-indigo-400 text-indigo-400' : 'hover:text-indigo-400'}
-                >Home</NavLink>
+                >Strona główna</NavLink>
               </li>
               <li>
                 <NavLink
@@ -37,7 +37,7 @@ export default function SidebarNav (){
                     }} 
                     className='hover:text-indigo-400'
                   >
-                    Logout
+                    Wyloguj
                   </button>
                 )}
               </li>
