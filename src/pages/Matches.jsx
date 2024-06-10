@@ -22,9 +22,9 @@ export default function Matches(){
     return (
         <>
             <SidebarNav />
-            <div>
+            <div className="flex flex-col">
                 {matches.map(match => (
-                    <div key={match.id} className="flex flex-row">
+                    <div key={match.id}>
                         <MatchBetForm matchData={match} />
                     </div>
                 ))}
