@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { addPrediction } from "../services/matchesService";
 
 export default function MatchBetForm({ matchData }) {
     const { user } = useContext(UserContext);
@@ -7,9 +8,9 @@ export default function MatchBetForm({ matchData }) {
     const [prediction, setPrediction] = useState({
         match_id: null,
         user_id: null,
-        team_one_prediction_goals: '',
-        team_two_prediction_goals: '',
-        winner: null,
+        team_one_goals: '',
+        team_two_goals: '',
+        result: null,
     });
 
     useEffect(() => {
@@ -23,8 +24,7 @@ export default function MatchBetForm({ matchData }) {
 
     function onSubmit(event) {
         event.preventDefault();
-        // api
-        console.log(prediction);
+        addPrediction(prediction);
     }
 
     function handleInputChange(event) {
@@ -59,8 +59,8 @@ export default function MatchBetForm({ matchData }) {
                                 <input
                                     className="text-center text-2xl text-white bg-blue w-12 aspect-square"
                                     type="number"
-                                    name="team_one_prediction_goals"
-                                    value={prediction.team_one_prediction_goals}
+                                    name="team_one_goals"
+                                    value={prediction.team_one_goals}
                                     placeholder="+"
                                     onChange={handleInputChange}
                                 />
@@ -68,8 +68,8 @@ export default function MatchBetForm({ matchData }) {
                                 <input
                                     className="text-center text-2xl text-white bg-blue w-12 aspect-square"
                                     type="number"
-                                    name="team_two_prediction_goals"
-                                    value={prediction.team_two_prediction_goals}
+                                    name="team_two_goals"
+                                    value={prediction.team_two_goals}
                                     placeholder="+"
                                     onChange={handleInputChange}
                                 />
@@ -87,28 +87,28 @@ export default function MatchBetForm({ matchData }) {
                     <div className="mb-2 mt-4">Wytypuj zwycięzcę:</div>
                     <input 
                         type="radio" 
-                        name="winner" 
+                        name="result" 
                         id="team_one" 
                         value="1"
-                        checked={prediction.winner === '1'}
+                        checked={prediction.result === '1'}
                         onChange={handleInputChange}
                     />
                     <label className="mr-4" htmlFor="team_one"> {match.team_one && match.team_one.name}</label>
                     <input 
                         type="radio" 
-                        name="winner" 
+                        name="result" 
                         id="draw" 
                         value="0"
-                        checked={prediction.winner === '0'}
+                        checked={prediction.result === '0'}
                         onChange={handleInputChange}
                     />
                     <label className="mr-4" htmlFor="draw"> Remis</label>
                     <input 
                         type="radio" 
-                        name="winner" 
+                        name="result" 
                         id="team_two" 
                         value="2"
-                        checked={prediction.winner === '2'}
+                        checked={prediction.result === '2'}
                         onChange={handleInputChange}
                     />
                     <label htmlFor="team_two"> {match.team_two && match.team_two.name}</label>

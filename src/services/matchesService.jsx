@@ -11,3 +11,14 @@ export async function getMatches() {
           }
           
       }
+
+export async function addPrediction(data){
+  console.log(data);
+  axios.post('https://bet-app-livid.vercel.app/api/predictions', data)
+  .then(response => {
+      console.log('Data successfully sent:', response.data);
+  })
+  .catch(error => {
+      console.error('Error sending data:', error);
+  });
+}
