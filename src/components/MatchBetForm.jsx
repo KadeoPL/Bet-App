@@ -95,7 +95,7 @@ export default function MatchBetForm({ matchData }) {
                 <div className="flex flex-col justify-center text-xs font-medium">{match.date}</div>
             </div>
             <div className="px-6 py-3">
-                <div className="flex flex-row justify-center itmes-center">
+                <div className="flex flex-row justify-center itmes-center mb-4">
                     <img src={ClockIcon} alt="Ikona" className="inline-block mr-2" />
                     {match.time}
                 </div>
@@ -153,7 +153,7 @@ export default function MatchBetForm({ matchData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '1' ? 'border-yellow' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '1' ? 'border-yellow text-yellow' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_one`}
                             >
                                 {match.team_one && match.team_one.name}
@@ -168,7 +168,7 @@ export default function MatchBetForm({ matchData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '0' ? 'border-yellow' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '0' ? 'border-yellow text-yellow' : 'border-white'}`}
                                 htmlFor={`${match.id}_draw`}
                             >
                                 Remis
@@ -183,7 +183,7 @@ export default function MatchBetForm({ matchData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`border-2 rounded-lg p-2  active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '2' ? 'border-yellow' : 'border-white'}`}
+                                className={`border-2 rounded-lg p-2  active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '2' ? 'border-yellow text-yellow' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_two`}
                             >
                                 {match.team_two && match.team_two.name}
