@@ -32,6 +32,7 @@ def get_matches():
         .eq("finished", False).order("id")
         .execute()
     )
+    app.logger.info("Get request dupa")
     return response.model_dump_json()
 
 
@@ -106,7 +107,7 @@ def post_predictions():
         data.get("team_two_goals"),
         data.get("result")
     )
-    already_predicted = supabase.table("predictions").select("id", count="exact").eq("match_id", match_id).eq("user_id", user_id).execute()
+    already_predicted = supabase.table("predictions").select("id", count="exact").match({"match_id": match_id, "user_id": user_id}).execute()
     if already_predicted.count > 0:
         to_update = dict()
         if team_one_goals and team_two_goals:
@@ -115,21 +116,21 @@ def post_predictions():
         if result:
             to_update["result"] = result
             
-        result = supabase.table("predictions").update(to_update).eq("match_id", match_id).eq("user_id", user_id).execute()
-    else:
-        result = (
-                supabase.table("predictions")
-                .insert(
-                    {
-                        "match_id": match_id,
-                        "user_id": user_id,
-                        "team_one_goals": team_one_goals,
-                        "team_two_goals": team_two_goals,
-                        "result": result
-                    }
-                )
-                .execute()
+        result = supabase.table("predictions").update(to_update).match({"match_id": match_id, "user_id": user_id}).execute()
+        return result.model_dump_json()
+    result = (
+            supabase.table("predictions")
+            .insert(
+                {
+                    "match_id": match_id,
+                    "user_id": user_id,
+                    "team_one_goals": team_one_goals,
+                    "team_two_goals": team_two_goals,
+                    "result": result
+                }
             )
+            .execute()
+        )
     return result.model_dump_json()
 
 @app.route("/api/result", methods=["POST"])
@@ -165,7 +166,7 @@ def update_result():
         user_points = user_points.data[0]["points"]
         user_points += points
         result = supabase.table("users").update({"points": user_points}).eq("id", user_id).execute()
-        print(result)
+
     return "jest git"
 
 if __name__ == "__main__":
