@@ -82,6 +82,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
             setDateError('Nie możesz obstawić tego meczu');
         } else {
             addPrediction(prediction);
+            
         }
     }
 
