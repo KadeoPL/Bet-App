@@ -1,4 +1,4 @@
-http://localhost:5000/api/matches
+https://bet-app-livid.vercel.app/api/matches
 
 ########################
 
@@ -10,7 +10,7 @@ http://localhost:5000/api/users
 
 #########################
 
-POST http://localhost:5000/api/result
+POST https://bet-app-livid.vercel.app/api/result
 Content-Type: application/json
 
 {

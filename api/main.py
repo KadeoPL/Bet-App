@@ -1,5 +1,4 @@
 import os
-import logging
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -13,7 +12,6 @@ supabase = create_client(url, key)
 
 app = Flask(__name__)
 CORS(app)
-logging.basicConfig(level=logging.INFO)
 @app.route("/api/matches", methods=["GET"])
 def get_matches():
     response = (
@@ -32,7 +30,7 @@ def get_matches():
         .eq("finished", False).order("id")
         .execute()
     )
-    app.logger.info("Get request dupa")
+    print(f"GET /api/matches request from {request.remote_addr}")
     return response.model_dump_json()
 
 @app.route("/api/users")
@@ -45,6 +43,7 @@ def get_users_result():
         ).order("points", desc=True)
         .execute()
     )
+    print(f"GET /api/users request from {request.remote_addr}")
     return result.model_dump_json()
 
 
@@ -75,21 +74,21 @@ def post_matches():
                 .execute()
                 .model_dump()["data"][0]["id"]
             )
-            result = (
-                supabase.table("matches")
-                .insert(
-                    {
-                        "team_one": team_one_id,
-                        "team_two": team_two_id,
-                        "date": date,
-                        "time": time,
-                        "group": group,
-                        "matchday": matchday,
-                    }
-                )
-                .execute()
+            
+            (supabase.table("matches")
+            .insert(
+                {
+                    "team_one": team_one_id,
+                    "team_two": team_two_id,
+                    "date": date,
+                    "time": time,
+                    "group": group,
+                    "matchday": matchday,
+                }
             )
-            print(result)
+            ).execute()
+            
+            print(f"Inserted match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{group}\n{matchday}")
 
     return jsonify({"status": "ok"})
 
@@ -119,9 +118,10 @@ def post_predictions():
         data.get("team_two_goals"),
         data.get("result")
     )
-    print(data)
+    print(f"POST /api.predictions/ with data:\n{data}")
     already_predicted = supabase.table("predictions").select("id", count="exact").match({"match_id": match_id, "user_id": user_id}).execute()
     if already_predicted.count > 0:
+        print("Match is already predicted by user, updating")
         to_update = dict()
         if team_one_goals and team_two_goals:
             to_update["team_one_goals"] = team_one_goals
@@ -130,7 +130,11 @@ def post_predictions():
             to_update["result"] = result
             
         result = supabase.table("predictions").update(to_update).match({"match_id": match_id, "user_id": user_id}).execute()
+        print(f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}")
+    
         return result.model_dump_json()
+    
+    print("Match is not already predicted by user, inserting")
     result = (
             supabase.table("predictions")
             .insert(
@@ -144,10 +148,12 @@ def post_predictions():
             )
             .execute()
         )
+    print(f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}")
     return result.model_dump_json()
 
 @app.route("/api/predictions/<user_id>")
 def get_predictions(user_id):
+    print(f"GET /api/predictions/{user_id} request from {request.remote_addr}")
     result = (
         supabase.table("predictions")
         .select(
@@ -164,9 +170,11 @@ def get_predictions(user_id):
 @app.route("/api/result", methods=["POST"])
 def update_result():
     data = request.get_json()
+    print(f"POST /api/result data:\n{data}")
     match_id, team_one_goals, team_two_goals = data["match_id"], data["team_one_goals"], data["team_two_goals"]
     result = 1 if team_one_goals > team_two_goals else 2 if team_one_goals < team_two_goals else 0
     supabase.table("matches").update({"team_one_goals": team_one_goals, "team_two_goals": team_two_goals, "result": result}).eq("id", match_id).execute()
+    print(f"Updated result for {match_id}, team_one_goals: {team_one_goals} team_two_goals: {team_two_goals}, result: {result}")
     users_predictions = (
         supabase.table("predictions")
         .select(
@@ -192,8 +200,10 @@ def update_result():
         
         user_points = supabase.table('users').select('points').eq("id", user_id).execute()
         user_points = user_points.data[0]["points"]
-        user_points += points
+        finished_user_points = user_points + points
         result = supabase.table("users").update({"points": user_points}).eq("id", user_id).execute()
+        print(f"update user points for user id {user_id}, because: user result = {user_result}, user_team_one_goals = {user_team_one_goals}, user_team_two_goals = {user_team_two_goals} \
+              user had {user_points}, achived {points} points, so has {finished_user_points} now")
 
     return "jest git"
 
