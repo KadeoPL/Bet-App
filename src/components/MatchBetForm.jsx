@@ -6,8 +6,8 @@ import ClockIcon from "../img/icons/clock.svg"
 export default function MatchBetForm({ matchData }) {
     const { user } = useContext(UserContext);
     const [match, setMatch] = useState({});
-    const [bgcolor, setBgColor] = useState({});
-    const [textColor, setTextColor] = useState({});
+    const [bgcolor, setBgColor] = useState('');
+    const [textColor, setTextColor] = useState('');
     const [prediction, setPrediction] = useState({
         match_id: null,
         user_id: null,
@@ -56,14 +56,47 @@ export default function MatchBetForm({ matchData }) {
         }
     }
 
+    const predictionData = {
+        team_one_goals: 5,
+        team_two_goals: 5,
+        result: 1,
+    }
+
     useEffect(() => {
         setMatch(matchData);
         setColorFromGroup(matchData.group);
-        setPrediction(prev => ({
-            ...prev,
-            match_id: matchData.id,
-            user_id: user.id,
-        }));
+        if(predictionData) {
+            if(predictionData.team_one_goals){
+                setPrediction(prev => ({
+                    ...prev,
+                    match_id: matchData.id,
+                    user_id: user.id,
+                    team_one_goals: predictionData.team_one_goals,
+                }));    
+            }
+            if(predictionData.team_two_goals){
+                setPrediction(prev => ({
+                    ...prev,
+                    match_id: matchData.id,
+                    user_id: user.id,
+                    team_two_goals: predictionData.team_two_goals,
+                }));    
+            }
+            if(predictionData.result){
+                setPrediction(prev => ({
+                    ...prev,
+                    match_id: matchData.id,
+                    user_id: user.id,
+                    result: predictionData.result,
+                }));    
+            }
+        } else {
+            setPrediction(prev => ({
+                ...prev,
+                match_id: matchData.id,
+                user_id: user.id,
+            }));
+        }
     }, [matchData, user]);
 
     function onSubmit(event) {
@@ -73,7 +106,6 @@ export default function MatchBetForm({ matchData }) {
         setDateError('');
 
         if (today > matchDate) {
-            console.log('Nie możesz obstawić tego meczu');
             setDateError('Nie możesz obstawić tego meczu');
         } else {
             addPrediction(prediction);
@@ -84,7 +116,7 @@ export default function MatchBetForm({ matchData }) {
         const { name, value } = event.target;
         setPrediction({
             ...prediction,
-            [name]: value
+            [name]: name === 'result' ? parseInt(value) : value
         });
     }
 
@@ -95,13 +127,15 @@ export default function MatchBetForm({ matchData }) {
                 <div className="flex flex-col justify-center text-xs font-medium">{match.date}</div>
             </div>
             <div className="px-6 py-3">
-                <div className="flex flex-row justify-center itmes-center">
+                <div className="flex flex-row justify-center items-center mb-4">
                     <img src={ClockIcon} alt="Ikona" className="inline-block mr-2" />
                     {match.time}
                 </div>
                 <div className="flex flex-row justify-center">
                     <div className="flex flex-col items-center">
-                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}></div>
+                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}>
+                            <img src="src/img/flags/Albania.png"></img>
+                        </div>
                         <div className="mt-2">
                             <span className='font-light'>{match.team_one && match.team_one.name}</span>
                         </div>
@@ -110,7 +144,9 @@ export default function MatchBetForm({ matchData }) {
                         vs.
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}></div>
+                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}>
+                            <img src={match.team_two && match.team_two.flag}></img>
+                        </div>
                         <div className="mt-2">
                             <span className='font-light'>{match.team_two && match.team_two.name}</span>
                         </div>
@@ -149,11 +185,11 @@ export default function MatchBetForm({ matchData }) {
                                 name="result"
                                 id={`${match.id}_team_one`}
                                 value="1"
-                                checked={prediction.result === '1'}
+                                checked={prediction.result === 1}
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '1' ? 'border-yellow' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === 1 ? 'border-yellow text-yellow' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_one`}
                             >
                                 {match.team_one && match.team_one.name}
@@ -164,11 +200,11 @@ export default function MatchBetForm({ matchData }) {
                                 name="result"
                                 id={`${match.id}_draw`}
                                 value="0"
-                                checked={prediction.result === '0'}
+                                checked={prediction.result === 0}
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '0' ? 'border-yellow' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === 0 ? 'border-yellow text-yellow' : 'border-white'}`}
                                 htmlFor={`${match.id}_draw`}
                             >
                                 Remis
@@ -179,11 +215,11 @@ export default function MatchBetForm({ matchData }) {
                                 name="result"
                                 id={`${match.id}_team_two`}
                                 value="2"
-                                checked={prediction.result === '2'}
+                                checked={prediction.result === 2}
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`border-2 rounded-lg p-2  active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '2' ? 'border-yellow' : 'border-white'}`}
+                                className={`border-2 rounded-lg p-2  active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === 2 ? 'border-yellow text-yellow' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_two`}
                             >
                                 {match.team_two && match.team_two.name}
@@ -196,7 +232,7 @@ export default function MatchBetForm({ matchData }) {
                             type="submit"
                             value="Zatwierdź"
                         />
-                        {dateError && <p>{dateError}</p>}
+                        {dateError && <p className="text-red">{dateError}</p>}
                     </div>
                 </form>
             </div>
