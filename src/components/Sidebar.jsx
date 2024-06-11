@@ -14,7 +14,7 @@ export default function SidebarNav (){
                 <NavLink
                   to="/"
                   className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
-                >Home</NavLink>
+                >Strona główna</NavLink>
               </li>
               <li>
                 <NavLink
@@ -24,7 +24,7 @@ export default function SidebarNav (){
               </li>
               <li>
                 <NavLink
-                  to="/usersList"
+                  to="/scoreboard"
                   className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
                 >Tabela</NavLink>
               </li>

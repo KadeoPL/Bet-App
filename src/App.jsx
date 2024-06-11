@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { UserContext } from './context/UserContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import UsersList from './pages/UsersList';
+import Scoreboard from './pages/Scoreboard';
 import Matches from './pages/Matches';
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={user ? <Home /> : <Login />} />
-        <Route path="/usersList" element={<UsersList />} />
+        <Route path="/Scoreboard" element={<Scoreboard />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Matches" element={<Matches />} />
       </Routes>

@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useContext } from 'react';
 import { UserContext } from "../context/UserContext";
 import { addPrediction } from "../services/matchesService";
-import ClockIcon from "../img/icons/clock.svg"
+import ClockIcon from "../img/icons/clock.svg";
 
-export default function MatchBetForm({ matchData }) {
+export default function MatchBetForm({ matchData, predictionData }) {
     const { user } = useContext(UserContext);
     const [match, setMatch] = useState({});
     const [bgcolor, setBgColor] = useState('');
@@ -19,36 +20,30 @@ export default function MatchBetForm({ matchData }) {
 
     function setColorFromGroup(group) {
         switch (group) {
-            case 'Group A':
+            case 'Grupa A':
                 setBgColor('bg-green');
                 setTextColor('text-white');
                 break;
-            
-            case 'Group B':
+            case 'Grupa B':
                 setBgColor('bg-darkblue');
                 setTextColor('text-white');
                 break;
-
-            case 'Group C':
+            case 'Grupa C':
                 setBgColor('bg-red');
                 setTextColor('text-white');
-                break; 
-                
-            case 'Group D':
+                break;
+            case 'Grupa D':
                 setBgColor('bg-yellow');
                 setTextColor('text-black');
                 break;
-            
-            case 'Group E':
+            case 'Grupa E':
                 setBgColor('bg-lightblue');
                 setTextColor('text-black');
                 break;
-                
-            case 'Group F':
+            case 'Grupa F':
                 setBgColor('bg-black');
                 setTextColor('text-white');
                 break;
-            
             default:
                 setBgColor('bg-blue');
                 setTextColor('text-white');
@@ -56,40 +51,18 @@ export default function MatchBetForm({ matchData }) {
         }
     }
 
-    const predictionData = {
-        team_one_goals: 5,
-        team_two_goals: 5,
-        result: 1,
-    }
-
     useEffect(() => {
         setMatch(matchData);
         setColorFromGroup(matchData.group);
-        if(predictionData) {
-            if(predictionData.team_one_goals){
-                setPrediction(prev => ({
-                    ...prev,
-                    match_id: matchData.id,
-                    user_id: user.id,
-                    team_one_goals: predictionData.team_one_goals,
-                }));    
-            }
-            if(predictionData.team_two_goals){
-                setPrediction(prev => ({
-                    ...prev,
-                    match_id: matchData.id,
-                    user_id: user.id,
-                    team_two_goals: predictionData.team_two_goals,
-                }));    
-            }
-            if(predictionData.result){
-                setPrediction(prev => ({
-                    ...prev,
-                    match_id: matchData.id,
-                    user_id: user.id,
-                    result: predictionData.result,
-                }));    
-            }
+        if (predictionData) {
+            if(predictionData)
+            setPrediction({
+                match_id: matchData.id,
+                user_id: user.id,
+                team_one_goals: predictionData.team_one_goals,
+                team_two_goals: predictionData.team_two_goals,
+                result: predictionData.result,
+            });
         } else {
             setPrediction(prev => ({
                 ...prev,
@@ -97,7 +70,7 @@ export default function MatchBetForm({ matchData }) {
                 user_id: user.id,
             }));
         }
-    }, [matchData, user]);
+    }, [matchData, user, predictionData]);
 
     function onSubmit(event) {
         event.preventDefault();
@@ -177,7 +150,7 @@ export default function MatchBetForm({ matchData }) {
                         </div>
                     </div>
                     <div className="text-center mb-4">
-                        <div className="mb-4 mt-6">Wytypuj zwycięzce:</div>
+                        <div className="mb-4 mt-6">Wytypuj zwycięzcę:</div>
                         <div className="flex flex-row text-sm justify-center">
                             <input
                                 className="appearance-none"
@@ -189,7 +162,7 @@ export default function MatchBetForm({ matchData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === 1 ? 'border-yellow text-yellow' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 1 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_one`}
                             >
                                 {match.team_one && match.team_one.name}
@@ -204,7 +177,7 @@ export default function MatchBetForm({ matchData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === 0 ? 'border-yellow text-yellow' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 0 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_draw`}
                             >
                                 Remis
@@ -219,7 +192,7 @@ export default function MatchBetForm({ matchData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`border-2 rounded-lg p-2  active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === 2 ? 'border-yellow text-yellow' : 'border-white'}`}
+                                className={`border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 2 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_two`}
                             >
                                 {match.team_two && match.team_two.name}
