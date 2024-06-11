@@ -133,6 +133,21 @@ def post_predictions():
         )
     return result.model_dump_json()
 
+@app.route("/api/predictions/<user_id>")
+def get_predictions(user_id):
+    result = (
+        supabase.table("predictions")
+        .select(
+            "match_id",
+            "result",
+            "team_one_goals",
+            "team_two_goals",
+        )
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return result.model_dump_json()
+
 @app.route("/api/result", methods=["POST"])
 def update_result():
     data = request.get_json()

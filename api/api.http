@@ -2,6 +2,10 @@ http://localhost:5000/api/matches
 
 ########################
 
+http://localhost:5000/api/predictions/2
+
+#########################
+
 POST http://localhost:5000/api/result
 Content-Type: application/json
 
