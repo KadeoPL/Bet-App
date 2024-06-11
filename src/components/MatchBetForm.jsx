@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { addPrediction} from "../services/matchesService";
+import { addPrediction } from "../services/matchesService";
+import ClockIcon from "../img/icons/clock.svg"
 
 export default function MatchBetForm({ matchData }) {
     const { user } = useContext(UserContext);
     const [match, setMatch] = useState({});
-    const [color, setColor] = useState({});
+    const [bgcolor, setBgColor] = useState({});
+    const [textColor, setTextColor] = useState({});
     const [prediction, setPrediction] = useState({
         match_id: null,
         user_id: null,
@@ -13,52 +15,69 @@ export default function MatchBetForm({ matchData }) {
         team_two_goals: '',
         result: null,
     });
+    const [dateError, setDateError] = useState('');
 
     function setColorFromGroup(group) {
         switch (group) {
             case 'Group A':
-                setColor('bg-green');
+                setBgColor('bg-green');
+                setTextColor('text-white');
                 break;
             
             case 'Group B':
-                setColor('bg-darkblue');
+                setBgColor('bg-darkblue');
+                setTextColor('text-white');
                 break;
 
             case 'Group C':
-                setColor('bg-red');
+                setBgColor('bg-red');
+                setTextColor('text-white');
                 break; 
                 
             case 'Group D':
-                setColor('bg-yellow');
+                setBgColor('bg-yellow');
+                setTextColor('text-black');
                 break;
             
             case 'Group E':
-                setColor('bg-lightblue');
+                setBgColor('bg-lightblue');
+                setTextColor('text-black');
                 break;
                 
             case 'Group F':
-                setColor('bg-black');
+                setBgColor('bg-black');
+                setTextColor('text-white');
                 break;
             
             default:
-                setColor('bg-blue');
+                setBgColor('bg-blue');
+                setTextColor('text-white');
                 break;
         }
     }
 
     useEffect(() => {
         setMatch(matchData);
-        setColorFromGroup(match.group);
+        setColorFromGroup(matchData.group);
         setPrediction(prev => ({
             ...prev,
             match_id: matchData.id,
             user_id: user.id,
         }));
-    }, [matchData, user, match]);
+    }, [matchData, user]);
 
     function onSubmit(event) {
         event.preventDefault();
-        addPrediction(prediction);
+        const today = new Date();
+        const matchDate = new Date(match.date);
+        setDateError('');
+
+        if (today > matchDate) {
+            console.log('Nie możesz obstawić tego meczu');
+            setDateError('Nie możesz obstawić tego meczu');
+        } else {
+            addPrediction(prediction);
+        }
     }
 
     function handleInputChange(event) {
@@ -70,48 +89,48 @@ export default function MatchBetForm({ matchData }) {
     }
 
     return (
-        <div className='font-manrope flex flex-col w-64 rounded-xl overflow-hidden shadow-lg'>
-            <div className={`${color} flex flex-row justify-between text-white py-2 px-4`}>
+        <div className='font-manrope flex flex-col bg-blue bg-opacity-50 w-72 rounded-xl overflow-hidden shadow-2xl text-white'>
+            <div className={`${bgcolor} flex flex-row justify-between ${textColor} py-2 px-4`}>
                 <div className="font-teko text-2xl font-bold">{match.group}</div>
                 <div className="flex flex-col justify-center text-xs font-medium">{match.date}</div>
             </div>
             <div className="px-6 py-3">
-            <div className="text-center">
-                {match.time}
-            </div>
-            <div className="flex flex-row justify-between">
-                <div className="flex flex-col items-center">
-                    <div className={`${color} h-14 aspect-square rounded-full`}></div>
+                <div className="flex flex-row justify-center itmes-center">
+                    <img src={ClockIcon} alt="Ikona" className="inline-block mr-2" />
+                    {match.time}
+                </div>
+                <div className="flex flex-row justify-center">
+                    <div className="flex flex-col items-center">
+                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}></div>
                         <div className="mt-2">
                             <span className='font-light'>{match.team_one && match.team_one.name}</span>
                         </div>
-                </div>
-                <div className="flex flex-col justify-end text-xs">
-                    vs.
-                </div>
-                <div className="flex flex-col items-center">
-                        <div className="h-14 aspect-square bg-blue rounded-full"></div>
+                    </div>
+                    <div className="flex flex-col justify-end text-xs px-7">
+                        vs.
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}></div>
                         <div className="mt-2">
                             <span className='font-light'>{match.team_two && match.team_two.name}</span>
                         </div>
                     </div>
-            </div>
-            <form onSubmit={onSubmit}>
-                <div className="flex flex-row gap-4">
-                    <div className="flex flex-col items-center text-center">
-                        <div>
-                            <div className="flex flex-row">
+                </div>
+                <form onSubmit={onSubmit}>
+                    <div className="flex flex-row justify-center gap-4 py-4">
+                        <div className="flex flex-col text-center">
+                            <div className="flex flex-row justify-center">
                                 <input
-                                    className="text-center text-2xl text-white bg-blue w-12 aspect-square"
+                                    className="transition ease-in-out text-center text-5xl font-bold text-darkblue bg-white w-16 aspect-square rounded-md hover:scale-110"
                                     type="number"
                                     name="team_one_goals"
                                     value={prediction.team_one_goals}
                                     placeholder="+"
                                     onChange={handleInputChange}
                                 />
-                                <div className="text-2xl px-4">:</div>
+                                <div className="text-5xl px-7">:</div>
                                 <input
-                                    className="text-center text-2xl text-white bg-blue w-12 aspect-square"
+                                    className="transition ease-in-out text-center text-5xl font-bold text-darkblue bg-white w-16 aspect-square rounded-md hover:scale-110"
                                     type="number"
                                     name="team_two_goals"
                                     value={prediction.team_two_goals}
@@ -121,46 +140,66 @@ export default function MatchBetForm({ matchData }) {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="text-center mb-4">
-                    <div className="mb-2 mt-4">Wytypuj zwycięzcę:</div>
-                    <input 
-                        type="radio" 
-                        name="result" 
-                        id="team_one" 
-                        value="1"
-                        checked={prediction.result === '1'}
-                        onChange={handleInputChange}
-                    />
-                    <label className="mr-4" htmlFor="team_one"> {match.team_one && match.team_one.name}</label>
-                    <input 
-                        type="radio" 
-                        name="result" 
-                        id="draw" 
-                        value="0"
-                        checked={prediction.result === '0'}
-                        onChange={handleInputChange}
-                    />
-                    <label className="mr-4" htmlFor="draw"> Remis</label>
-                    <input 
-                        type="radio" 
-                        name="result" 
-                        id="team_two" 
-                        value="2"
-                        checked={prediction.result === '2'}
-                        onChange={handleInputChange}
-                    />
-                    <label htmlFor="team_two"> {match.team_two && match.team_two.name}</label>
-                </div>
-                <div className="text-center">
-                    <input 
-                        className={`${color} text-white px-4 py-2`}
-                        type="submit"
-                        value="Zatwierdź"
-                    />
-                </div>
-            </form>
+                    <div className="text-center mb-4">
+                        <div className="mb-4 mt-6">Wytypuj zwycięzce:</div>
+                        <div className="flex flex-row text-sm justify-center">
+                            <input
+                                className="appearance-none"
+                                type="radio"
+                                name="result"
+                                id={`${match.id}_team_one`}
+                                value="1"
+                                checked={prediction.result === '1'}
+                                onChange={handleInputChange}
+                            />
+                            <label
+                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '1' ? 'border-yellow' : 'border-white'}`}
+                                htmlFor={`${match.id}_team_one`}
+                            >
+                                {match.team_one && match.team_one.name}
+                            </label>
+                            <input
+                                className="appearance-none"
+                                type="radio"
+                                name="result"
+                                id={`${match.id}_draw`}
+                                value="0"
+                                checked={prediction.result === '0'}
+                                onChange={handleInputChange}
+                            />
+                            <label
+                                className={`mr-4 border-2 rounded-lg p-2 active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '0' ? 'border-yellow' : 'border-white'}`}
+                                htmlFor={`${match.id}_draw`}
+                            >
+                                Remis
+                            </label>
+                            <input
+                                className="appearance-none"
+                                type="radio"
+                                name="result"
+                                id={`${match.id}_team_two`}
+                                value="2"
+                                checked={prediction.result === '2'}
+                                onChange={handleInputChange}
+                            />
+                            <label
+                                className={`border-2 rounded-lg p-2  active:border-yellow hover:bg-yellow hover:text-black hover:border-yellow ${prediction.result === '2' ? 'border-yellow' : 'border-white'}`}
+                                htmlFor={`${match.id}_team_two`}
+                            >
+                                {match.team_two && match.team_two.name}
+                            </label>
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <input
+                            className={`${bgcolor} ${textColor} transition ease-in-out px-4 py-2 rounded-lg hover:scale-110 `}
+                            type="submit"
+                            value="Zatwierdź"
+                        />
+                        {dateError && <p>{dateError}</p>}
+                    </div>
+                </form>
             </div>
-            </div>
+        </div>
     );
 }

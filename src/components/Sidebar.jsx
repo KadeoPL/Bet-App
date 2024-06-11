@@ -7,26 +7,26 @@ export default function SidebarNav (){
 
     return (
       <div>
-        <div className='bg-blue text-white p-5'>
+        <div className='bg-darkblue text-white p-5'>
           <nav>
             <ul className='flex flex-row justify-end gap-4'>
               <li>
                 <NavLink
                   to="/"
-                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-darkblue'}
+                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
                 >Home</NavLink>
               </li>
               <li>
                 <NavLink
                   to="/matches"
-                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-darkblue'}
+                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
                 >Mecze</NavLink>
               </li>
               <li>
                 <NavLink
                   to="/usersList"
-                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-darkblue'}
-                >Użytkownicy</NavLink>
+                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
+                >Tabela</NavLink>
               </li>
               <li>
                 {user && (
@@ -35,9 +35,9 @@ export default function SidebarNav (){
                       logout();
                       window.location.href = "/";
                     }} 
-                    className='hover:text-darkblue'
+                    className='hover:text-lightblue'
                   >
-                    Logout
+                    Wyloguj
                   </button>
                 )}
               </li>

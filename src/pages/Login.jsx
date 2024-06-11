@@ -51,11 +51,11 @@ export default function Login() {
   }
 
   return (
-     <div className='h-full w-full bg-blue flex justify-center items-center'>
+     <div className='h-screen w-screen bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed flex justify-center items-center font-manrope'>
      <div className='w-64'>
       <form className='flex flex-col gap-4'>
           <input
-                className='rounded-lg'
+                className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'
                 type="text"
                 value={loginInput}
                 placeholder="Enter your login"
@@ -63,15 +63,16 @@ export default function Login() {
               />
               {loginError && <p className='text-red-400'>{loginError}</p>}
           <input
-                className='rounded-lg'
+                className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'
                 type="password"
                 value={passwordInput}
                 placeholder="Enter your password"
                 onChange={(ev) => setPasswordInput(ev.target.value)}
               />
-              {passwordError && <p className='text-red-400'>{passwordError}</p>}
+              {passwordError && <p className='text-red'>{passwordError}</p>}
 
           <input
+                className='transition ease-in-out bg-yellow py-3 px-4 rounded-lg hover:scale-110 '
                 type="submit"
                 onClick={onButtonClick}
                 value="Log in"

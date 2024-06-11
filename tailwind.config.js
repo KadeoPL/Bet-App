@@ -15,10 +15,14 @@ export default {
       'red': '#FD0300',
       'lightblue': '#D3E2EC',
       'black': '#201E23',
+      'transparent': 'transparent',
     },
     fontFamily: {
       teko: ["Teko", "sans-serif"],
       manrope: ["Manrope", "sans-serif"],
+    },
+    backgroundImage: {
+      bgmain: "url('/src/img/backgrounds/mainbg.jpg')",
     }
   },
   plugins: [],
