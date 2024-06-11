@@ -134,7 +134,7 @@ export default function MatchBetForm({ matchData }) {
                 <div className="flex flex-row justify-center">
                     <div className="flex flex-col items-center">
                         <div className={`${bgcolor} h-14 aspect-square rounded-full`}>
-                            <img src="src/img/flags/Albania.png"></img>
+                            <img src={match.team_one && match.team_one.flag}></img>
                         </div>
                         <div className="mt-2">
                             <span className='font-light'>{match.team_one && match.team_one.name}</span>
