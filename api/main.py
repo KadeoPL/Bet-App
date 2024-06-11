@@ -1,5 +1,5 @@
 import os
-
+import logging
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -13,7 +13,7 @@ supabase = create_client(url, key)
 
 app = Flask(__name__)
 CORS(app)
-
+logging.basicConfig(level=logging.INFO)
 @app.route("/api/matches", methods=["GET"])
 def get_matches():
     response = (
@@ -34,6 +34,19 @@ def get_matches():
     )
     app.logger.info("Get request dupa")
     return response.model_dump_json()
+
+@app.route("/api/users")
+def get_users_result(user_id):
+    result = (
+        supabase.table("users")
+        .select(
+            "name",
+            "points"
+        )
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return result.model_dump_json()
 
 
 @app.route("/api/matches", methods=["POST"])
