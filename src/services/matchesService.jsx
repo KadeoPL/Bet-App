@@ -31,7 +31,6 @@ export async function addPrediction(data) {
   }
 }
 
-
 export async function getPrediction(id) {
   try {
       const response = await axios.get(`https://bet-app-livid.vercel.app/api/predictions/${id}`);

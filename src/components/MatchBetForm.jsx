@@ -55,12 +55,13 @@ export default function MatchBetForm({ matchData, predictionData }) {
         setMatch(matchData);
         setColorFromGroup(matchData.group);
         if (predictionData) {
+            if(predictionData)
             setPrediction({
                 match_id: matchData.id,
                 user_id: user.id,
-                team_one_goals: predictionData.team_one_goals ?? '',
-                team_two_goals: predictionData.team_two_goals ?? '',
-                result: predictionData.result ?? null,
+                team_one_goals: predictionData.team_one_goals,
+                team_two_goals: predictionData.team_two_goals,
+                result: predictionData.result,
             });
         } else {
             setPrediction(prev => ({
