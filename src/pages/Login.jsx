@@ -31,9 +31,9 @@ export default function Login() {
     setPasswordError('');
 
     if (loginInput === '') {
-      setLoginError('Please enter your login');
+      setLoginError('Pole nie może być puste!');
     } else if (passwordInput === ''){
-      setPasswordError('Please enter your password');
+      setPasswordError('Pole nie może być puste!');
     } else {
       
       const user = users.find(user => user.login === loginInput);
@@ -42,10 +42,10 @@ export default function Login() {
         if (user.password === passwordInput) {
           login(user);
         } else {
-          setPasswordError('Incorrect password, try again!');
+          setPasswordError('Niepoprawne hasło, spróbuj ponownie!');
         }
       } else {
-        setLoginError('Incorrect login, try again!');
+        setLoginError('Niepoprawny login, spróbuj ponownie!');
       }
     }
   }
@@ -58,15 +58,15 @@ export default function Login() {
                 className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'
                 type="text"
                 value={loginInput}
-                placeholder="Enter your login"
+                placeholder="Wpisz login"
                 onChange={(ev) => setLoginInput(ev.target.value)}
               />
-              {loginError && <p className='text-red-400'>{loginError}</p>}
+              {loginError && <p className='text-red'>{loginError}</p>}
           <input
                 className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'
                 type="password"
                 value={passwordInput}
-                placeholder="Enter your password"
+                placeholder="Wpisz hasło"
                 onChange={(ev) => setPasswordInput(ev.target.value)}
               />
               {passwordError && <p className='text-red'>{passwordError}</p>}
@@ -75,7 +75,7 @@ export default function Login() {
                 className='transition ease-in-out bg-yellow py-3 px-4 rounded-lg hover:scale-110 '
                 type="submit"
                 onClick={onButtonClick}
-                value="Log in"
+                value="Zaloguj"
             />
       </form>    
     </div>

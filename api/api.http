@@ -1,8 +1,16 @@
-http://localhost:5000/api/matches
+https://bet-app-livid.vercel.app/api/matches
 
 ########################
 
-POST http://localhost:5000/api/result
+http://localhost:5000/api/predictions/2
+
+########################
+
+http://localhost:5000/api/users
+
+#########################
+
+POST https://bet-app-livid.vercel.app/api/result
 Content-Type: application/json
 
 {
@@ -17,11 +25,41 @@ POST http://localhost:5000/api/predictions
 Content-Type: application/json
 
 {
-  "match_id": 14,
+  "match_id": 18,
   "user_id": 2,
   "team_one_goals": 2,
-  "team_two_goals": 0,
+  "team_two_goals": 1,
   "result": 1
+}
+
+
+#######################
+POST http://localhost:5000/api/matches
+Content-Type: application/json
+
+{
+  "name": "Euro 2024",
+  "rounds" : [
+    {
+      "name": "Matchday 4",
+      "matches" : [
+        {
+            "num": 55,
+            "date": "2023-06-14",
+            "time": "20:00",
+            "team1": {
+              "name": "Niemcy",
+              "code": "GER"
+            },
+            "team2": {
+              "name": "Szkocja",
+              "code": "SCO"
+            },
+            "group": "Group A"
+          }
+      ]
+    }
+  ]
 }
 
 #######################
