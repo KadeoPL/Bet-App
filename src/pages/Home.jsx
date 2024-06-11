@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       <SidebarNav />
-      <div className='min-h-screen w-full bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope m'>
+      <div className='min-h-screen w-full bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope '>
         <div className='md:flex md:flex-row md:justify-between'>
         <h1 className='text-white font-bold text-5xl'>Witaj, {user.login}!</h1>
         <div className='flex flex-row items-center'>
