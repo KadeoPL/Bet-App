@@ -36,14 +36,13 @@ def get_matches():
     return response.model_dump_json()
 
 @app.route("/api/users")
-def get_users_result(user_id):
+def get_users_result():
     result = (
         supabase.table("users")
         .select(
-            "name",
+            "login",
             "points"
-        )
-        .eq("user_id", user_id)
+        ).order("points", desc=True)
         .execute()
     )
     return result.model_dump_json()
@@ -120,6 +119,7 @@ def post_predictions():
         data.get("team_two_goals"),
         data.get("result")
     )
+    print(data)
     already_predicted = supabase.table("predictions").select("id", count="exact").match({"match_id": match_id, "user_id": user_id}).execute()
     if already_predicted.count > 0:
         to_update = dict()
