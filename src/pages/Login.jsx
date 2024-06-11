@@ -15,6 +15,7 @@ export default function Login() {
       try {
         const users = await getUsers();
         setUsers(users);
+        console.log(users);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -23,64 +24,61 @@ export default function Login() {
     fetchData();
   }, []);
 
-  function onButtonClick() {
+  function onButtonClick(event) {
+    event.preventDefault();
+
     setLoginError('');
     setPasswordError('');
 
     if (loginInput === '') {
       setLoginError('Please enter your login');
-      return;
-    }
-
-    if (passwordInput === '') {
+    } else if (passwordInput === ''){
       setPasswordError('Please enter your password');
-      return;
-    }
-
-    const user = users.find(user => user.login === loginInput);
-
-    if (user) {
-      if (user.password === passwordInput) {
-        login(user);
-      } else {
-        setPasswordError('Incorrect password, try again!');
-      }
     } else {
-      setLoginError('Incorrect login, try again!');
+      
+      const user = users.find(user => user.login === loginInput);
+
+      if (user) {
+        if (user.password === passwordInput) {
+          login(user);
+        } else {
+          setPasswordError('Incorrect password, try again!');
+        }
+      } else {
+        setLoginError('Incorrect login, try again!');
+      }
     }
   }
 
   return (
-     <div className='flex items-center justify-center w-screen'>
-      <div className='flex flex-col gap-5'>
-        <div >
+     <div className='h-screen w-screen bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed flex justify-center items-center font-manrope'>
+     <div className='w-64'>
+      <form className='flex flex-col gap-4'>
           <input
-            className='rounded-lg'
-            type="text"
-            value={loginInput}
-            placeholder="Enter your login"
-            onChange={(ev) => setLoginInput(ev.target.value)}
-          />
-          {loginError && <p className='text-red-400'>{loginError}</p>}
-        </div>
-        <div>
+                className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'
+                type="text"
+                value={loginInput}
+                placeholder="Enter your login"
+                onChange={(ev) => setLoginInput(ev.target.value)}
+              />
+              {loginError && <p className='text-red-400'>{loginError}</p>}
           <input
-            className='rounded-lg'
-            type="password"
-            value={passwordInput}
-            placeholder="Enter your password"
-            onChange={(ev) => setPasswordInput(ev.target.value)}
-          />
-          {passwordError && <p className='text-red-400'>{passwordError}</p>}
-        </div>
-        <div className='bg-indigo-950 text-white text-center p-4 rounded-lg hover:bg-indigo-800'>
+                className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'
+                type="password"
+                value={passwordInput}
+                placeholder="Enter your password"
+                onChange={(ev) => setPasswordInput(ev.target.value)}
+              />
+              {passwordError && <p className='text-red'>{passwordError}</p>}
+
           <input
-            type="submit"
-            onClick={onButtonClick}
-            value="Log in"
-          />
-        </div>
-      </div>
-    </div> 
+                className='transition ease-in-out bg-yellow py-3 px-4 rounded-lg hover:scale-110 '
+                type="submit"
+                onClick={onButtonClick}
+                value="Log in"
+            />
+      </form>    
+    </div>
+    </div>
   );
 }
