@@ -22,7 +22,7 @@ export default function Matches(){
     return (
         <>
             <SidebarNav />
-            <div className="flex flex-col md:flex-row md:flex-wrap">
+            <div className="flex flex-col justify-center gap-x-9 gap-y-5 md:flex-row md:flex-wrap ">
                 {matches.map(match => (
                     <div key={match.id}>
                         <MatchBetForm matchData={match} />

@@ -11,7 +11,15 @@ export default {
       'yellow': '#FDC904',
       'darkblue': '#000D40',
       'white': '#FFFFFF',
+      'green': '#05B85D',
+      'red': '#FD0300',
+      'lightblue': '#D3E2EC',
+      'black': '#201E23',
     },
+    fontFamily: {
+      teko: ["Teko", "sans-serif"],
+      manrope: ["Manrope", "sans-serif"],
+    }
   },
   plugins: [],
 }
