@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { getUsers } from '../services/userService';
+import LogoVertical from '../img/icons/eurobet24_logo_vertical.svg'
 
 export default function Login() {
   const { login } = useContext(UserContext);
@@ -50,8 +51,15 @@ export default function Login() {
   }
 
   return (
-     <div className='h-screen w-screen bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed flex justify-center items-center font-manrope'>
+     <div className='h-screen w-screen bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed flex justify-center items-center font-manrope'>
      <div className='w-64'>
+      <div className='flex justify-center mb-7'>
+        <img 
+          className='w-32'
+          src={LogoVertical}
+          alt="logo"
+          />
+      </div>
       <form className='flex flex-col gap-4'>
           <input
                 className='rounded-lg text-manrope bg-transparent border-2 border-white text-white py-3 px-4'

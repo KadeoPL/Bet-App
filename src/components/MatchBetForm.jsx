@@ -98,7 +98,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
         <div className='font-manrope flex flex-col bg-blue bg-opacity-50 w-72 rounded-xl overflow-hidden shadow-2xl text-white'>
             <div className={`${bgcolor} flex flex-row justify-between ${textColor} py-2 px-4`}>
                 <div className="font-teko text-2xl font-bold">{match.group}</div>
-                <div className="flex flex-col justify-center text-xs font-medium">{match.date}</div>
+                <div className="flex flex-col justify-center text- font-medium">{match.date}</div>
             </div>
             <div className="px-6 py-3">
                 <div className="flex flex-row justify-center items-center mb-4">

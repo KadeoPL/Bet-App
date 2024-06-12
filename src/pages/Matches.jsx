@@ -28,7 +28,7 @@ export default function Matches() {
     return (
         <>
             <SidebarNav />
-            <div className="flex flex-col items-center bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed gap-x-9 gap-y-5 pt-8 md:flex-row md:flex-wrap md:justify-center">
+            <div className="flex flex-col items-center bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-cover bg-fixed gap-x-9 gap-y-5 pt-8 md:flex-row md:flex-wrap md:justify-center">
                 {matches.map(match => {
                     const matchPrediction = predictions.find(prediction => prediction.match_id === match.id);
                     return (

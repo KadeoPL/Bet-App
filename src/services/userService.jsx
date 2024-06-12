@@ -13,18 +13,18 @@ export async function addUser(id, login, password, isAdmin) {
     }
   }
 
-  // export async function getUsers() {
-  //   const { data, error } = await supabase
-  //     .from('users')
-  //     .select('*')
-  
-  //   if (error) {
-  //     throw error
-  //   }
-  //   return data
-  // }
-
   export async function getUsers() {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+  
+    if (error) {
+      throw error
+    }
+    return data
+  }
+
+  export async function getUsersToScoreboard() {
     try {
         const response = await axios.get(`https://bet-app-livid.vercel.app/api/users`);
         const users = response.data;
