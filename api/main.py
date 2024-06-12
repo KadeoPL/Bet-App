@@ -68,7 +68,7 @@ def get_users_result():
 
 @app.route("/api/login")
 def login():
-    data = request.get_json("data")
+    data = request.get_json()
     login = data["login"]
     password = data["password"]
     result = (

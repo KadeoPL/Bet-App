@@ -35,11 +35,11 @@ POST http://localhost:5000/api/predictions
 Content-Type: application/json
 
 {
-  "match_id": 18,
+  "match_id": 16,
   "user_id": 2,
   "team_one_goals": 2,
   "team_two_goals": 1,
-  "result": 1
+  "result": 0
 }
 
 
