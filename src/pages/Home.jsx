@@ -1,9 +1,23 @@
 import { UserContext } from '../context/UserContext';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import SidebarNav from '../components/Sidebar';
+import MobileNav from '../components/MobileNav';
 
 export default function Home() {
   const { user } = useContext(UserContext);
+  const [isMobile, setIsMobile] = useState(false)
+ 
+  const handleResize = () => {
+    if (window.innerWidth < 720) {
+        setIsMobile(true)
+    } else {
+        setIsMobile(false)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize)
+  })
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -14,7 +28,7 @@ export default function Home() {
 
   return (
     <>
-      <SidebarNav />
+      {isMobile ? <MobileNav /> : <SidebarNav />}
       <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope '>
         <div className='md:flex md:flex-row md:justify-between'>
         <h1 className='text-white font-bold text-5xl'>Witaj, {user.login}!</h1>
