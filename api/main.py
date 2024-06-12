@@ -61,6 +61,16 @@ def get_matches():
         print(f"[{request.remote_addr}] Error fetching matches: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
+@app.route("/api/points/<id>")
+def get_points_for_user(id):
+    result = (
+        supabase.table("users")
+        .select("points")
+        .eq("id", id)
+        .execute()
+        .model_dump_json()
+    )
+    return result
 
 @app.route("/api/users")
 def get_users_result():
@@ -105,7 +115,6 @@ def login():
             "message": "Użytkownik został zalogowany",
             "login": login,
             "id": result["data"][0]["id"],
-            "points": result["data"][0]["points"],
         },
         ensure_ascii=False,
     ), 200
@@ -311,7 +320,7 @@ def update_result():
         finished_user_points = user_points + points
         result = (
             supabase.table("users")
-            .update({"points": user_points})
+            .update({"points": finished_user_points})
             .eq("id", user_id)
             .execute()
         )
