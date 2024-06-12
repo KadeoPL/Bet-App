@@ -66,7 +66,7 @@ def get_users_result():
     return result.model_dump_json()
 
 
-@app.route("/api/login")
+@app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
     login = data["login"]
