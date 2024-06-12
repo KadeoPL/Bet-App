@@ -184,7 +184,7 @@ def post_predictions():
         if team_one_goals and team_two_goals:
             to_update["team_one_goals"] = team_one_goals
             to_update["team_two_goals"] = team_two_goals
-        if result:
+        if result is not None:
             to_update["result"] = result
 
         result = (
