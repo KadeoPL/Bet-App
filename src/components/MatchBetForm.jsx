@@ -74,17 +74,18 @@ export default function MatchBetForm({ matchData, predictionData }) {
 
     function onSubmit(event) {
         event.preventDefault();
+        const matchDateTimeString = `${match.date}T${match.time}`;
+        const matchDate = new Date(matchDateTimeString);
         const today = new Date();
-        const matchDate = new Date(match.date);
         setDateError('');
 
         if (today > matchDate) {
             setDateError('Nie możesz obstawić tego meczu');
         } else {
-            addPrediction(prediction);
-            
+            addPrediction(prediction); 
         }
     }
+
 
     function handleInputChange(event) {
         const { name, value } = event.target;
