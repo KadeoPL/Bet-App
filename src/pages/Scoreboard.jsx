@@ -11,11 +11,10 @@ export default function Scoreboard(){
     };
   }, []);
 
-
   return (
     <> 
       <SidebarNav />
-      <div className='min-h-screen w-full bg-blue bg-bgmain bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope '>
+      <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope '>
         <Array />
       </div>
     </>

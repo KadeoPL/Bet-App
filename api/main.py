@@ -1,8 +1,10 @@
 import os
+
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from supabase import create_client
+import json
 
 load_dotenv()
 
@@ -11,7 +13,10 @@ key = os.getenv("SUPABASE_KEY")
 supabase = create_client(url, key)
 
 app = Flask(__name__)
+
 CORS(app)
+
+
 @app.route("/api/matches", methods=["GET"])
 def get_matches():
     response = (
@@ -27,24 +32,56 @@ def get_matches():
             "group",
             "matchday",
         )
-        .eq("finished", False).order("id")
+        .eq("finished", False)
+        .order("id")
         .execute()
     )
     print(f"GET /api/matches request from {request.remote_addr}")
     return response.model_dump_json()
 
+
 @app.route("/api/users")
 def get_users_result():
     result = (
         supabase.table("users")
-        .select(
-            "login",
-            "points"
-        ).order("points", desc=True)
+        .select("login", "points")
+        .order("points", desc=True)
         .execute()
     )
     print(f"GET /api/users request from {request.remote_addr}")
     return result.model_dump_json()
+
+
+@app.route("/api/login")
+def login():
+    data = request.get_json("data")
+    login = data["login"]
+    password = data["password"]
+    result = (
+        supabase.table("users")
+        .select("id", "password", "points")
+        .eq("login", login)
+        .execute()
+        .model_dump()
+    )
+    print(f"GET /api/login request from {request.remote_addr} for {login}")
+    if len(result["data"]) == 0:
+        return json.dumps(
+            {"message": "Błędna nazwa użytkownika", "id": None, "points": None},
+            ensure_ascii=False,
+        ), 404
+    if result["data"][0]["password"] != password:
+        return json.dumps(
+            {"message": "Błędne hasło", "id": None, "points": None}, ensure_ascii=False
+        ), 404
+    return json.dumps(
+        {
+            "message": "Użytkownik został zalogowany",
+            "id": result["data"][0]["id"],
+            "points": result["data"][0]["password"],
+        },
+        ensure_ascii=False,
+    ), 200
 
 
 @app.route("/api/matches", methods=["POST"])
@@ -74,21 +111,23 @@ def post_matches():
                 .execute()
                 .model_dump()["data"][0]["id"]
             )
-            
-            (supabase.table("matches")
-            .insert(
-                {
-                    "team_one": team_one_id,
-                    "team_two": team_two_id,
-                    "date": date,
-                    "time": time,
-                    "group": group,
-                    "matchday": matchday,
-                }
-            )
+
+            (
+                supabase.table("matches").insert(
+                    {
+                        "team_one": team_one_id,
+                        "team_two": team_two_id,
+                        "date": date,
+                        "time": time,
+                        "group": group,
+                        "matchday": matchday,
+                    }
+                )
             ).execute()
-            
-            print(f"Inserted match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{group}\n{matchday}")
+
+            print(
+                f"Inserted match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{group}\n{matchday}"
+            )
 
     return jsonify({"status": "ok"})
 
@@ -116,10 +155,15 @@ def post_predictions():
         data.get("user_id"),
         data.get("team_one_goals"),
         data.get("team_two_goals"),
-        data.get("result")
+        data.get("result"),
     )
     print(f"POST /api.predictions/ with data:\n{data}")
-    already_predicted = supabase.table("predictions").select("id", count="exact").match({"match_id": match_id, "user_id": user_id}).execute()
+    already_predicted = (
+        supabase.table("predictions")
+        .select("id", count="exact")
+        .match({"match_id": match_id, "user_id": user_id})
+        .execute()
+    )
     if already_predicted.count > 0:
         print("Match is already predicted by user, updating")
         to_update = dict()
@@ -128,28 +172,38 @@ def post_predictions():
             to_update["team_two_goals"] = team_two_goals
         if result:
             to_update["result"] = result
-            
-        result = supabase.table("predictions").update(to_update).match({"match_id": match_id, "user_id": user_id}).execute()
-        print(f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}")
-    
-        return result.model_dump_json()
-    
-    print("Match is not already predicted by user, inserting")
-    result = (
+
+        result = (
             supabase.table("predictions")
-            .insert(
-                {
-                    "match_id": match_id,
-                    "user_id": user_id,
-                    "team_one_goals": team_one_goals,
-                    "team_two_goals": team_two_goals,
-                    "result": result
-                }
-            )
+            .update(to_update)
+            .match({"match_id": match_id, "user_id": user_id})
             .execute()
         )
-    print(f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}")
+        print(
+            f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
+        )
+
+        return result.model_dump_json()
+
+    print("Match is not already predicted by user, inserting")
+    result = (
+        supabase.table("predictions")
+        .insert(
+            {
+                "match_id": match_id,
+                "user_id": user_id,
+                "team_one_goals": team_one_goals,
+                "team_two_goals": team_two_goals,
+                "result": result,
+            }
+        )
+        .execute()
+    )
+    print(
+        f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
+    )
     return result.model_dump_json()
+
 
 @app.route("/api/predictions/<user_id>")
 def get_predictions(user_id):
@@ -167,14 +221,33 @@ def get_predictions(user_id):
     )
     return result.model_dump_json()
 
+
 @app.route("/api/result", methods=["POST"])
 def update_result():
     data = request.get_json()
     print(f"POST /api/result data:\n{data}")
-    match_id, team_one_goals, team_two_goals = data["match_id"], data["team_one_goals"], data["team_two_goals"]
-    result = 1 if team_one_goals > team_two_goals else 2 if team_one_goals < team_two_goals else 0
-    supabase.table("matches").update({"team_one_goals": team_one_goals, "team_two_goals": team_two_goals, "result": result}).eq("id", match_id).execute()
-    print(f"Updated result for {match_id}, team_one_goals: {team_one_goals} team_two_goals: {team_two_goals}, result: {result}")
+    match_id, team_one_goals, team_two_goals = (
+        data["match_id"],
+        data["team_one_goals"],
+        data["team_two_goals"],
+    )
+    result = (
+        1
+        if team_one_goals > team_two_goals
+        else 2
+        if team_one_goals < team_two_goals
+        else 0
+    )
+    supabase.table("matches").update(
+        {
+            "team_one_goals": team_one_goals,
+            "team_two_goals": team_two_goals,
+            "result": result,
+        }
+    ).eq("id", match_id).execute()
+    print(
+        f"Updated result for {match_id}, team_one_goals: {team_one_goals} team_two_goals: {team_two_goals}, result: {result}"
+    )
     users_predictions = (
         supabase.table("predictions")
         .select(
@@ -195,17 +268,28 @@ def update_result():
         points = 0
         if result == user_result:
             points += 1
-        if user_team_one_goals == team_one_goals and user_team_two_goals == team_two_goals:
+        if (
+            user_team_one_goals == team_one_goals
+            and user_team_two_goals == team_two_goals
+        ):
             points += 3
-        
-        user_points = supabase.table('users').select('points').eq("id", user_id).execute()
+
+        user_points = (
+            supabase.table("users").select("points").eq("id", user_id).execute()
+        )
         user_points = user_points.data[0]["points"]
         finished_user_points = user_points + points
-        result = supabase.table("users").update({"points": user_points}).eq("id", user_id).execute()
+        result = (
+            supabase.table("users")
+            .update({"points": user_points})
+            .eq("id", user_id)
+            .execute()
+        )
         print(f"update user points for user id {user_id}, because: user result = {user_result}, user_team_one_goals = {user_team_one_goals}, user_team_two_goals = {user_team_two_goals} \
               user had {user_points}, achived {points} points, so has {finished_user_points} now")
 
     return "jest git"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
