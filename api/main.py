@@ -10,22 +10,34 @@ load_dotenv(find_dotenv())
 
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
+secret_key = os.getenv("SECRET_KEY")
 if not url or not key:
     raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set")
 supabase = create_client(url, key)
 
 app = Flask(__name__)
+app.secret_key = secret_key
 
 CORS(app)
 
+def require_auth(func):
+    def wrapper(*args, **kwargs):
+        secret_key = request.headers.get('Authorization')
+        if secret_key == app.secret_key:
+            return func(*args, **kwargs)
+        else:
+            return jsonify({'message': 'Unauthorized'}), 401
+    wrapper.__name__ = func.__name__
+    return wrapper
+
 @app.route("/api/crontest")
 def crontest():
-    print(f"GET /api/crontest request from {request.remote_addr}")
+    print(f"[{request.remote_addr}] GET /api/crontest")
     return jsonify({"message": "jest git"})
 
 @app.route("/api/matches", methods=["GET"])
 def get_matches():
-    print(f"GET /api/matches request from {request.remote_addr}")
+    print(f"[{request.remote_addr}] GET /api/matches request")
     try:
         response = (
             supabase.table("matches")
@@ -46,13 +58,13 @@ def get_matches():
         )
         return response.model_dump_json()
     except Exception as e:
-        print(f"Error fetching matches: {e}")
+        print(f"[{request.remote_addr}] Error fetching matches: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 
 @app.route("/api/users")
 def get_users_result():
-    print(f"GET /api/users request from {request.remote_addr}")
+    print(f"[{request.remote_addr}] GET /api/users request")
     try:
         result = (
             supabase.table("users")
@@ -61,7 +73,7 @@ def get_users_result():
             .execute()
         )
     except Exception as e:
-        print(f"Error fetching users: {e}")
+        print(f"[{request.remote_addr}] Error fetching users: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
     return result.model_dump_json()
 
@@ -78,7 +90,7 @@ def login():
         .execute()
         .model_dump()
     )
-    print(f"GET /api/login request from {request.remote_addr} for {login}")
+    print(f"[{request.remote_addr}] GET /api/login request for {login}")
     if len(result["data"]) == 0:
         return json.dumps(
             {"message": "Błędna nazwa użytkownika", "id": None, "points": None},
@@ -99,6 +111,7 @@ def login():
 
 
 @app.route("/api/matches", methods=["POST"])
+@require_auth
 def post_matches():
     data = request.get_json()
     rounds = data["rounds"]
@@ -140,13 +153,14 @@ def post_matches():
             ).execute()
 
             print(
-                f"Inserted match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{group}\n{matchday}"
+                f"[{request.remote_addr}] Inserted match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{group}\n{matchday}"
             )
 
     return jsonify({"status": "ok"})
 
 
 @app.route("/api/teams", methods=["POST"])
+@require_auth
 def post_teams():
     data = request.get_json()
     for group in data:
@@ -171,7 +185,7 @@ def post_predictions():
         data.get("team_two_goals"),
         data.get("result"),
     )
-    print(f"POST /api.predictions/ with data:\n{data}")
+    print(f"[{request.remote_addr}] POST /api.predictions/ with data:\n{data}")
     already_predicted = (
         supabase.table("predictions")
         .select("id", count="exact")
@@ -179,7 +193,7 @@ def post_predictions():
         .execute()
     )
     if already_predicted.count > 0:
-        print("Match is already predicted by user, updating")
+        print(f"[{request.remote_addr}] Match is already predicted by user, updating")
         to_update = dict()
         if team_one_goals and team_two_goals:
             to_update["team_one_goals"] = team_one_goals
@@ -194,12 +208,12 @@ def post_predictions():
             .execute()
         )
         print(
-            f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
+            f"[{request.remote_addr}] Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
         )
 
         return result.model_dump_json()
 
-    print("Match is not already predicted by user, inserting")
+    print(f"[{request.remote_addr}] Match is not already predicted by user, inserting")
     result = (
         supabase.table("predictions")
         .insert(
@@ -214,14 +228,14 @@ def post_predictions():
         .execute()
     )
     print(
-        f"Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
+        f"[{request.remote_addr}] Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
     )
     return result.model_dump_json()
 
 
 @app.route("/api/predictions/<user_id>")
 def get_predictions(user_id):
-    print(f"GET /api/predictions/{user_id} request from {request.remote_addr}")
+    print(f"[{request.remote_addr}] GET /api/predictions/{user_id} request")
     result = (
         supabase.table("predictions")
         .select(
@@ -237,9 +251,10 @@ def get_predictions(user_id):
 
 
 @app.route("/api/result", methods=["POST"])
+@require_auth
 def update_result():
     data = request.get_json()
-    print(f"POST /api/result data:\n{data}")
+    print(f"[{request.remote_addr}] POST /api/result data:\n{data}")
     match_id, team_one_goals, team_two_goals = (
         data["match_id"],
         data["team_one_goals"],
@@ -260,7 +275,7 @@ def update_result():
         }
     ).eq("id", match_id).execute()
     print(
-        f"Updated result for {match_id}, team_one_goals: {team_one_goals} team_two_goals: {team_two_goals}, result: {result}"
+        f"[{request.remote_addr}] Updated result for {match_id}, team_one_goals: {team_one_goals} team_two_goals: {team_two_goals}, result: {result}"
     )
     users_predictions = (
         supabase.table("predictions")
@@ -299,7 +314,7 @@ def update_result():
             .eq("id", user_id)
             .execute()
         )
-        print(f"update user points for user id {user_id}, because: user result = {user_result}, user_team_one_goals = {user_team_one_goals}, user_team_two_goals = {user_team_two_goals} \
+        print(f"[{request.remote_addr}] update user points for user id {user_id}, because: user result = {user_result}, user_team_one_goals = {user_team_one_goals}, user_team_two_goals = {user_team_two_goals} \
               user had {user_points}, achived {points} points, so has {finished_user_points} now")
 
     return "jest git"
