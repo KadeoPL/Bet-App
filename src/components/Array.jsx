@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import { getUsersToScoreboard } from "../services/userService";
 
 export default function Array() {
-  const [users, setUsers] = useState([]);
+  const [othersUsers, setOthersUsers] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const fetchedUsers = await getUsersToScoreboard();
-        setUsers(fetchedUsers);
+        setOthersUsers(fetchedUsers);
+        console.log(fetchedUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     }
     fetchData();
   }, []);
-  console.log(users);
 
   return (
     <div>
@@ -30,11 +32,11 @@ export default function Array() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <tr key={index} className={`text-white text-sm md:text-xl font-manrope text-center bg-opacity-50 ${index % 2 === 0 ? "bg-blue" : "bg-darkblue"}`}>
-                <td className="px-4 py-2 w-1/4">{index + 1}</td>
-                <td className="px-4 py-2 w-1/2">{user.login}</td>
-                <td className="px-4 py-2 w-1/4">{user.points}</td>
+            {othersUsers.map((otherUser, index) => (
+              <tr key={index} className={`text-white text-sm md:text-xl font-manrope font-medium text-center bg-opacity-50 ${index % 2 === 0 ? "bg-blue" : "bg-darkblue"}`}>
+                <td className={`px-4 py-2 w-1/4 ${user.login === otherUser.login ? 'font-bold text-yellow' : 'font-medium'}`}>{index + 1}</td>
+                <td className={`px-4 py-2 w-1/2 ${user.login === otherUser.login ? 'font-bold text-yellow' : 'font-medium'}`}>{otherUser.login}</td>
+                <td className={`px-4 py-2 w-1/4 ${user.login === otherUser.login ? 'font-bold text-yellow' : 'font-medium'}`}>{otherUser.points}</td>
               </tr>
             ))}
           </tbody>

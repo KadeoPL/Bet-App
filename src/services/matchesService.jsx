@@ -12,20 +12,9 @@ export async function getMatches() {
           
 }
 
-// export async function addPrediction(data){
-//   axios.post('https://bet-app-livid.vercel.app/api/predictions', data)
-//   .then(response => {
-//       console.log(response.data)
-//   })
-//   .catch(error => {
-//       console.error('Error sending data:', error);
-//   });
-// }
-
 export async function addPrediction(data) {
   try {
-    const response = await axios.post('https://bet-app-livid.vercel.app/api/predictions', data);
-    console.log(response.data);
+    await axios.post('https://bet-app-livid.vercel.app/api/predictions', data);
   } catch (error) {
     console.error('Error sending data:', error);
   }

@@ -1,29 +1,19 @@
-import { supabase } from '../utils/supabaseClient'
 import axios from 'axios'
 
-export async function addUser(id, login, password, isAdmin) {
-    const { data, error } = await supabase
-      .from('users')
-      .insert([{ id: id, login: login, password: password, isAdmin: isAdmin, points: 0}])
-  
-    if (error) {
-      console.error('Error adding user:', error)
-    } else {
-      console.log('User added:', data)
+
+  export async function loginUser(data) {
+    try {
+      const response = await axios.post('https://bet-app-livid.vercel.app/api/login', data);
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw error.response.data.message;
+      } else {
+        throw 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.';
+      }
     }
   }
-
-  export async function getUsers() {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
   
-    if (error) {
-      throw error
-    }
-    return data
-  }
-
   export async function getUsersToScoreboard() {
     try {
         const response = await axios.get(`https://bet-app-livid.vercel.app/api/users`);
@@ -34,14 +24,19 @@ export async function addUser(id, login, password, isAdmin) {
     }
   }
 
-  export async function deleteUser(userId) {
-    const { data, error } = await supabase
-      .from('users')
-      .delete()
-      .eq('id', userId)
+  export async function getUserPoints(id) {
+    try {
+      const response = await axios.get(`https://bet-app-livid.vercel.app/api/points/${id}`);
+      const pointsArray = response.data.data;
   
-    if (error) {
-      throw error
+      if (pointsArray.length > 0) {
+        const points = pointsArray[0].points;
+        return points;
+      } else {
+        throw new Error("Nie znaleziono punktów dla użytkownika");
+      }
+    } catch (error) {
+      console.error("Błąd podczas pobierania punktów:", error);
+      throw error;
     }
-    return data
   }
