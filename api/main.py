@@ -18,6 +18,10 @@ app = Flask(__name__)
 
 CORS(app)
 
+@app.route("/api/crontest")
+def crontest():
+    print(f"GET /api/crontest request from {request.remote_addr}")
+    return jsonify({"message": "jest git"})
 
 @app.route("/api/matches", methods=["GET"])
 def get_matches():

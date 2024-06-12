@@ -4,7 +4,7 @@
       { "src": "/[^.]+", "dest": "/", "status": 200 }
     ],
     "crons": [{
-      "path": "/api/matches",
-      "schedule": "0 0 * * *"
+      "path": "/api/crontest",
+      "schedule": "50 21 * * *"
     }]
 }
