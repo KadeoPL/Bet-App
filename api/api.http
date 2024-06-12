@@ -6,27 +6,33 @@ http://localhost:5000/api/predictions/2
 
 ########################
 
-http://localhost:5000/api/users
+http://localhost:5000/api/points/2
+
+########################
+
+http://localhost:5000/api/matches
+Authorization: jebackurwaXD
 
 #########################
 
-https://bet-app-livid.vercel.app/api/login
+POST http://localhost:5000/api/login
 Content-Type: application/json
 
 {
   "login": "Kadeo",
-  "password": "kadeo12ssaasa3"
+  "password": "kadeo123"
 }
 
 #########################
 
-POST https://bet-app-livid.vercel.app/api/result
+POST http://localhost:5000/api/result
 Content-Type: application/json
+Authorization: jebackurwaXD
 
 {
-  "match_id": 14,
-  "team_one_goals": 2,
-  "team_two_goals": 0
+  "match_id": 52,
+  "team_one_goals": 3,
+  "team_two_goals": 2
 }
 
 ########################
@@ -35,17 +41,18 @@ POST http://localhost:5000/api/predictions
 Content-Type: application/json
 
 {
-  "match_id": 18,
+  "match_id": 16,
   "user_id": 2,
   "team_one_goals": 2,
   "team_two_goals": 1,
-  "result": 1
+  "result": 0
 }
 
 
 #######################
-POST http://localhost:5000/api/matches
+POST https://bet-app-livid.vercel.app/api/matches
 Content-Type: application/json
+Authorization: jebackurwaXD
 
 {
   "name": "Euro 2024",
@@ -54,18 +61,18 @@ Content-Type: application/json
       "name": "Matchday 4",
       "matches" : [
         {
-            "num": 55,
-            "date": "2023-06-14",
-            "time": "20:00",
+            "num": 59,
+            "date": "2024-06-12",
+            "time": "22:25",
             "team1": {
-              "name": "Niemcy",
+              "name": "Węgry",
               "code": "GER"
             },
             "team2": {
-              "name": "Szkocja",
+              "name": "Polska",
               "code": "SCO"
             },
-            "group": "Group A"
+            "group": "Group F"
           }
       ]
     }
