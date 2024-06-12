@@ -103,6 +103,7 @@ def login():
     return json.dumps(
         {
             "message": "Użytkownik został zalogowany",
+            "login": login,
             "id": result["data"][0]["id"],
             "points": result["data"][0]["points"],
         },
