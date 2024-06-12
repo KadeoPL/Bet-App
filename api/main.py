@@ -1,15 +1,17 @@
 import os
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from supabase import create_client
 import json
 
-load_dotenv()
+load_dotenv(find_dotenv())
 
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
+if not url or not key:
+    raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set")
 supabase = create_client(url, key)
 
 app = Flask(__name__)
@@ -19,36 +21,44 @@ CORS(app)
 
 @app.route("/api/matches", methods=["GET"])
 def get_matches():
-    response = (
-        supabase.table("matches")
-        .select(
-            "id",
-            "team_one:teams!matches_team_one_fkey(name, flag)",
-            "team_two:teams!matches_team_two_fkey(name, flag)",
-            "date",
-            "time",
-            "team_one_goals",
-            "team_two_goals",
-            "group",
-            "matchday",
-        )
-        .eq("finished", False)
-        .order("id")
-        .execute()
-    )
     print(f"GET /api/matches request from {request.remote_addr}")
-    return response.model_dump_json()
+    try:
+        response = (
+            supabase.table("matches")
+            .select(
+                "id",
+                "team_one:teams!matches_team_one_fkey(name, flag)",
+                "team_two:teams!matches_team_two_fkey(name, flag)",
+                "date",
+                "time",
+                "team_one_goals",
+                "team_two_goals",
+                "group",
+                "matchday",
+            )
+            .eq("finished", False)
+            .order("id")
+            .execute()
+        )
+        return response.model_dump_json()
+    except Exception as e:
+        print(f"Error fetching matches: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 
 @app.route("/api/users")
 def get_users_result():
-    result = (
-        supabase.table("users")
-        .select("login", "points")
-        .order("points", desc=True)
-        .execute()
-    )
     print(f"GET /api/users request from {request.remote_addr}")
+    try:
+        result = (
+            supabase.table("users")
+            .select("login", "points")
+            .order("points", desc=True)
+            .execute()
+        )
+    except Exception as e:
+        print(f"Error fetching users: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
     return result.model_dump_json()
 
 
@@ -78,7 +88,7 @@ def login():
         {
             "message": "Użytkownik został zalogowany",
             "id": result["data"][0]["id"],
-            "points": result["data"][0]["password"],
+            "points": result["data"][0]["points"],
         },
         ensure_ascii=False,
     ), 200

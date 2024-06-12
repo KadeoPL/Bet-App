@@ -2,5 +2,11 @@
     "routes": [
       { "src": "/api/(.*)", "dest": "/api/main" },
       { "src": "/[^.]+", "dest": "/", "status": 200 }
+    ],
+    "crons": [
+      {
+        "path": "/api/matches",
+        "schedule": "*/1 * * * *"
+      }
     ]
 }
