@@ -175,7 +175,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 1 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 hover:text-white hover:border-yellow ${prediction.result === 1 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_one`}
                             >
                                 {match.team_one && match.team_one.name}
@@ -190,7 +190,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 0 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 hover:text-white hover:border-yellow ${prediction.result === 0 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_draw`}
                             >
                                 Remis
@@ -205,7 +205,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 2 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
+                                className={`border-2 rounded-lg p-2 hover:text-white hover:border-yellow ${prediction.result === 2 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_two`}
                             >
                                 {match.team_two && match.team_two.name}

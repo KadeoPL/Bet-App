@@ -18,3 +18,45 @@ input[type="number"] {
 *::after {
   box-sizing: border-box;
 }
+
+.nav-container {
+  background-color: yellow;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+}
+
+.icon-container {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.icon-container.active {
+  background-color: blue;
+  color: yellow;
+  border-radius: 50%;
+  padding: 5px;
+  transform: translateY(-15px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-text {
+  margin-top: 3px;
+  font-size: 12px;
+  transition: color 0.3s ease;
+}
+
