@@ -5,13 +5,6 @@ import MobileNav from "../components/MobileNav"
 
 export default function Scoreboard(){
 
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
-
   return (
     <> 
       {/* <SidebarNav /> */}
