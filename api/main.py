@@ -4,7 +4,9 @@ from dotenv import load_dotenv, find_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from supabase import create_client
+from datetime import datetime
 import json
+import pytz
 
 load_dotenv(find_dotenv())
 
@@ -258,6 +260,21 @@ def get_predictions(user_id):
         .execute()
     )
     return result.model_dump_json()
+
+@app.route("/api/match_predictions/<match_id>")
+def get_match_predictions(match_id):
+    print(f"[{request.remote_addr}] GET /api/match_predictions/{match_id} request")
+
+    result = supabase.table("matches").select("date", "time").eq("id", match_id).execute().model_dump()
+    date = result["data"][0]["date"]
+    time = result["data"][0]["time"]
+    timezone = pytz.timezone('Europe/Warsaw')
+    timedate = datetime.strptime((date + " " + time), "%Y-%m-%d %H:%M:%S")
+    timedate = timezone.localize(timedate)
+    if not timedate < datetime.now(timezone):
+        return json.dumps({"message": "Mecz się jeszcze nie rozpoczął"}, ensure_ascii=False), 404
+    all_predictions = supabase.table("predictions").select("user_id:users!predictions_user_id_fkey(login)", "result", "team_one_goals", "team_two_goals").eq("match_id", match_id).execute().model_dump_json()
+    return all_predictions, 200
 
 
 @app.route("/api/result", methods=["POST"])
