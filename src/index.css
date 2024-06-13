@@ -47,7 +47,7 @@ input[type="number"] {
 
 .icon-container.active {
   background-color: #143CD8;
-  color: yellow;
+  color: #FDC904;
   border-radius: 50%;
   padding: 5px;
   transform: translateY(-15px);
