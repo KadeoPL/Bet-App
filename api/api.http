@@ -1,3 +1,7 @@
+http://localhost:5000/api/match_predictions/15
+########################
+
+
 https://bet-app-livid.vercel.app/api/matches
 
 ########################
@@ -8,7 +12,10 @@ http://localhost:5000/api/predictions/2
 
 http://localhost:5000/api/points/2
 
+
 ########################
+
+
 
 http://localhost:5000/api/matches
 Authorization: jebackurwaXD
@@ -30,8 +37,8 @@ Content-Type: application/json
 Authorization: jebackurwaXD
 
 {
-  "match_id": 52,
-  "team_one_goals": 3,
+  "match_id": 54,
+  "team_one_goals": 1,
   "team_two_goals": 2
 }
 
@@ -62,10 +69,10 @@ Authorization: jebackurwaXD
       "matches" : [
         {
             "num": 59,
-            "date": "2024-06-12",
+            "date": "2024-06-15",
             "time": "22:25",
             "team1": {
-              "name": "Węgry",
+              "name": "Turcja",
               "code": "GER"
             },
             "team2": {
