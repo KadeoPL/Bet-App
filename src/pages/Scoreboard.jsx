@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import SidebarNav from "../components/Sidebar"
+
 import Array from "../components/Array"
 import MobileNav from "../components/MobileNav"
 

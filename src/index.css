@@ -20,7 +20,7 @@ input[type="number"] {
 }
 
 .nav-container {
-  background-color: yellow;
+  background-color: #FDC904;
   height: 60px;
   display: flex;
   justify-content: space-around;
@@ -46,7 +46,7 @@ input[type="number"] {
 }
 
 .icon-container.active {
-  background-color: blue;
+  background-color: #143CD8;
   color: yellow;
   border-radius: 50%;
   padding: 5px;

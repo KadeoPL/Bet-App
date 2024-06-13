@@ -1,6 +1,5 @@
 import { UserContext } from '../context/UserContext';
 import { useContext, useEffect, useState} from 'react';
-import SidebarNav from '../components/Sidebar';
 import { getUserPoints } from '../services/userService';
 import MobileNav from "../components/MobileNav"
 
