@@ -2,6 +2,7 @@ import { UserContext } from '../context/UserContext';
 import { useContext, useEffect, useState} from 'react';
 import SidebarNav from '../components/Sidebar';
 import { getUserPoints } from '../services/userService';
+import MobileNav from "../components/MobileNav"
 
 export default function Home() {
   const { user } = useContext(UserContext);
@@ -28,7 +29,8 @@ export default function Home() {
 
   return (
     <>
-      <SidebarNav />
+      {/* <SidebarNav /> */}
+      <MobileNav />
       <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope '>
         <div className='md:flex md:flex-row md:justify-between'>
           <h1 className='text-white font-bold text-5xl'>Witaj, {user.login}!</h1>

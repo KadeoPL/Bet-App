@@ -17,6 +17,9 @@ export default function MatchBetForm({ matchData, predictionData }) {
         result: null,
     });
     const [dateError, setDateError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState('Wysyłanie...');
+
 
     function setColorFromGroup(group) {
         switch (group) {
@@ -82,7 +85,15 @@ export default function MatchBetForm({ matchData, predictionData }) {
         if (today > matchDate) {
             setDateError('Nie możesz obstawić tego meczu');
         } else {
-            addPrediction(prediction); 
+            addPrediction(prediction);
+            setIsLoading(true);
+            setTimeout(() => {
+                setLoadingText('Wysłano');
+            }, 3000);
+            
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 5000);
         }
     }
 
@@ -205,7 +216,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                         <input
                             className={`${bgcolor} ${textColor} transition ease-in-out px-4 py-2 rounded-lg hover:scale-110 `}
                             type="submit"
-                            value="Zatwierdź"
+                            value={isLoading ? loadingText : "Obstaw"}
                         />
                         {dateError && <p className="text-red">{dateError}</p>}
                     </div>

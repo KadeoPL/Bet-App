@@ -6,48 +6,57 @@ import { MdOutlineScoreboard } from "react-icons/md";
 import { LuTrophy } from "react-icons/lu";
 import { IoLogOutOutline } from "react-icons/io5";
 
-export default function SidebarNav (){
-    const { user, logout } = useContext(UserContext);
+function BottomMenu() {
+  const { user, logout } = useContext(UserContext);
 
-    return (
-      <div className='fixed bottom-0 w-screen'>
-        <div className='bg-darkblue text-white p-5'>
-          <nav>
-            <ul className='flex flex-row justify-center gap-4'>
-              <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:fill-lightblue'}>
-                  <IoHomeOutline className='h-10 w-10' /></NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/matches"
-                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
-                ><MdOutlineScoreboard className='h-10 w-10'/></NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/scoreboard"
-                  className={({ isActive }) => isActive ? 'hover:text-darkblue text-yellow' : 'hover:text-lightblue'}
-                ><LuTrophy className='h-10 w-10' /></NavLink>
-              </li>
-              <li>
-                {user && (
-                  <button 
-                    onClick={() => {
-                      logout();
-                      window.location.href = "/";
-                    }} 
-                    className='hover:text-lightblue'
-                  >
-                    <IoLogOutOutline className='h-10 w-10' />
-                  </button>
-                )}
-              </li>
-            </ul>
-          </nav>
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-yellow shadow-lg rounded-t-2xl">
+      <div className="flex justify-around">
+        <MenuItem to="/" icon={IoHomeOutline} />
+        <MenuItem to="/matches" icon={MdOutlineScoreboard} />
+        <MenuItem to="/scoreboard" icon={LuTrophy} />
+        {user && (
+          <LogoutMenuItem to="/" onLogout={logout} icon={IoLogOutOutline} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MenuItem({ to, icon: Icon }) {
+  return (
+    <NavLink to={to} className={({ isActive }) =>
+      `w-full flex flex-col items-center ${isActive ? 'text-yellow' : 'text-blue'}`
+    }>
+      {({ isActive }) => (
+        <div className={`relative flex items-center justify-center`}>
+          <div className={`transition transform ${isActive ? 'translate-y-0 translate-y-full z-10' : 'translate-y-2'}`}>
+            <Icon className="w-7 h-7" />
+          </div>
+          {isActive && (
+            <div className="absolute bottom-0 w-12 h-12 bg-blue rounded-full" />
+          )}
+        </div>
+      )}
+    </NavLink>
+  );
+}
+
+function LogoutMenuItem({to, onLogout, icon: Icon }) {
+  return (
+    <NavLink to={to}>
+    <div
+      onClick={onLogout}
+      className="w-full flex flex-col items-center p-2 text-gray-500 cursor-pointer"
+    >
+      <div className="relative flex items-center justify-center">
+        <div className="transition transform translate-y-2 hover:translate-y-0">
+          <Icon className="w-7 h-7" />
         </div>
       </div>
-    );
+    </div>
+    </NavLink>
+  );
 }
+
+export default BottomMenu;
