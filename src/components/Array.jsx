@@ -11,7 +11,6 @@ export default function Array() {
       try {
         const fetchedUsers = await getUsersToScoreboard();
         setOthersUsers(fetchedUsers);
-        console.log(fetchedUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
       }

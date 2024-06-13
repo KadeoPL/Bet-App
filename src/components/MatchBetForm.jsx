@@ -3,6 +3,8 @@ import { useState, useEffect, useContext } from 'react';
 import { UserContext } from "../context/UserContext";
 import { addPrediction } from "../services/matchesService";
 import ClockIcon from "../img/icons/clock.svg";
+import { FaArrowRight } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom';
 
 export default function MatchBetForm({ matchData, predictionData }) {
     const { user } = useContext(UserContext);
@@ -19,6 +21,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const [dateError, setDateError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
+    const navigate = useNavigate();
 
 
     function setColorFromGroup(group) {
@@ -97,13 +100,16 @@ export default function MatchBetForm({ matchData, predictionData }) {
         }
     }
 
-
     function handleInputChange(event) {
         const { name, value } = event.target;
         setPrediction({
             ...prediction,
             [name]: name === 'result' ? parseInt(value) : value
         });
+    }
+
+    const navigateToMatch = () => {
+        navigate('/matchinfo', { state: { id: match.id, team_one: match.team_one, team_two: match.team_two, group: match.group} });
     }
 
     return (
@@ -219,6 +225,10 @@ export default function MatchBetForm({ matchData, predictionData }) {
                             value={isLoading ? loadingText : "Obstaw"}
                         />
                         {dateError && <p className="text-red">{dateError}</p>}
+                    </div>
+                    <div className='flex flex-row items-center text-sm justify-center mt-5' onClick={navigateToMatch}>
+                        <p className='mr-1'>Sprawdź jak typowali pozostali</p>
+                        <FaArrowRight />
                     </div>
                 </form>
             </div>
