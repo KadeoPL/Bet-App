@@ -17,6 +17,9 @@ export default function MatchBetForm({ matchData, predictionData }) {
         result: null,
     });
     const [dateError, setDateError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState('Wysyłanie...');
+
 
     function setColorFromGroup(group) {
         switch (group) {
@@ -82,7 +85,15 @@ export default function MatchBetForm({ matchData, predictionData }) {
         if (today > matchDate) {
             setDateError('Nie możesz obstawić tego meczu');
         } else {
-            addPrediction(prediction); 
+            addPrediction(prediction);
+            setIsLoading(true);
+            setTimeout(() => {
+                setLoadingText('Wysłano');
+            }, 3000);
+            
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 5000);
         }
     }
 
@@ -164,7 +175,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 1 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 hover:text-white hover:border-yellow ${prediction.result === 1 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_one`}
                             >
                                 {match.team_one && match.team_one.name}
@@ -179,7 +190,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`mr-4 border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 0 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
+                                className={`mr-4 border-2 rounded-lg p-2 hover:text-white hover:border-yellow ${prediction.result === 0 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_draw`}
                             >
                                 Remis
@@ -194,7 +205,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                                 onChange={handleInputChange}
                             />
                             <label
-                                className={`border-2 rounded-lg p-2 hover:text-yellow hover:border-yellow ${prediction.result === 2 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
+                                className={`border-2 rounded-lg p-2 hover:text-white hover:border-yellow ${prediction.result === 2 ? 'border-yellow bg-yellow text-black' : 'border-white'}`}
                                 htmlFor={`${match.id}_team_two`}
                             >
                                 {match.team_two && match.team_two.name}
@@ -205,7 +216,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                         <input
                             className={`${bgcolor} ${textColor} transition ease-in-out px-4 py-2 rounded-lg hover:scale-110 `}
                             type="submit"
-                            value="Zatwierdź"
+                            value={isLoading ? loadingText : "Obstaw"}
                         />
                         {dateError && <p className="text-red">{dateError}</p>}
                     </div>
