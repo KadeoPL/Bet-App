@@ -8,7 +8,7 @@ export default function Scoreboard(){
     <div> 
       {/* <SidebarNav /> */}
       <MobileNav />
-      <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope pb-28'>
+      <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-8 font-manrope pb-28'>
         <Array />
       </div>
     </div>
