@@ -10,7 +10,7 @@ http://localhost:5000/api/predictions/2
 
 ########################
 
-http://localhost:5000/api/points/2
+http://localhost:5000/api/points/12
 
 
 ########################
@@ -18,7 +18,6 @@ http://localhost:5000/api/points/2
 
 
 http://localhost:5000/api/matches
-Authorization: jebackurwaXD
 
 #########################
 
@@ -55,35 +54,37 @@ Content-Type: application/json
   "result": 0
 }
 
-
 #######################
-POST https://bet-app-livid.vercel.app/api/matches
+POST http://localhost:5000/api/matches
 Content-Type: application/json
 Authorization: jebackurwaXD
 
 {
-  "name": "Euro 2024",
-  "rounds" : [
-    {
-      "name": "Matchday 4",
-      "matches" : [
+    "round" : "Matchday 4",
+    "matches": [
         {
-            "num": 59,
-            "date": "2024-06-15",
-            "time": "22:25",
-            "team1": {
-              "name": "Turcja",
-              "code": "GER"
-            },
-            "team2": {
-              "name": "Polska",
-              "code": "SCO"
-            },
-            "group": "Group F"
-          }
-      ]
-    }
-  ]
+            "date": "2024-06-28",
+            "time": "21:00:00",
+            "team_one": "Belgia",
+            "team_two": "Holandia",
+            "group": "Group A"
+        },
+        {
+            "date": "2024-06-29",
+            "time": "21:30:00",
+            "team_one": "Niemcy",
+            "team_two": "Austria",
+            "group": "Group B"
+
+        },
+        {
+            "date": "2024-06-30",
+            "time": "15:00:00",
+            "team_one": "Francja",
+            "team_two": "Anglia",
+            "group": "Group C"
+        }
+    ]
 }
 
 #######################
