@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Scoreboard from './pages/Scoreboard';
 import Matches from './pages/Matches';
+import MatchInfo from './pages/MatchInfo';
 
 function App() {
   const { user } = useContext(UserContext);
@@ -16,6 +17,7 @@ function App() {
         <Route path="/Scoreboard" element={<Scoreboard />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Matches" element={<Matches />} />
+        <Route path="/MatchInfo" element={<MatchInfo />} />
       </Routes>
     </Router>
   );

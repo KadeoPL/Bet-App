@@ -2,7 +2,6 @@ import { UserContext } from '../context/UserContext';
 import { useContext, useEffect, useState} from 'react';
 import { getUserPoints } from '../services/userService';
 import MobileNav from "../components/MobileNav"
-
 export default function Home() {
   const { user } = useContext(UserContext);
   const [userPoints, setUserPoints] = useState('');

@@ -30,3 +30,16 @@ export async function getPrediction(id) {
   }
   
 }
+
+export async function getOtherPrediction(matchId) {
+  try {
+      const response = await axios.get(`https://bet-app-livid.vercel.app/api/match_predictions/${matchId}`);
+      const otherPredictionData = response.data;
+      return otherPredictionData.data
+  } catch (error) {
+    console.log(error)
+  }
+  
+}
+
+
