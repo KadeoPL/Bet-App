@@ -20,7 +20,7 @@ export default function Array() {
 
   return (
     <div>
-      <h1 className="text-white font-bold text-5xl font-manrope mb-8">Tabela wyników</h1>
+      <h1 className="text-white font-bold text-4xl font-manrope mb-8">Tabela wyników</h1>
       <div className="overflow-x-auto">
         <table className="table-auto border-collapse">
           <thead className="text-white">

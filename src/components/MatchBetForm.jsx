@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { UserContext } from "../context/UserContext";
 import { addPrediction } from "../services/matchesService";
 import ClockIcon from "../img/icons/clock.svg";
@@ -22,7 +22,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
     const navigate = useNavigate();
-    const isDisplayMatchInfo = false;
+    const [isDisplayMatchInfo, setIsDisplayMatchInfo] = useState(false)
 
 
     function setColorFromGroup(group) {
@@ -58,9 +58,22 @@ export default function MatchBetForm({ matchData, predictionData }) {
         }
     }
 
+    const checkDateToDisplayMatchInfo = useCallback(() => {
+        const matchDateTimeString = `${match.date}T${match.time}`;
+        const matchDate = new Date(matchDateTimeString);
+        const today = new Date();
+    
+        if (today > matchDate) {
+            setIsDisplayMatchInfo(true);
+        } else {
+            setIsDisplayMatchInfo(false);
+        }
+    }, [match]);
+
     useEffect(() => {
         setMatch(matchData);
         setColorFromGroup(matchData.group);
+        checkDateToDisplayMatchInfo()
         if (predictionData) {
             if(predictionData)
             setPrediction({
@@ -77,7 +90,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                 user_id: user.id,
             }));
         }
-    }, [matchData, user, predictionData]);
+    }, [matchData, user, predictionData, checkDateToDisplayMatchInfo]);
 
     function onSubmit(event) {
         event.preventDefault();
@@ -98,6 +111,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
             setTimeout(() => {
                 setIsLoading(false);
             }, 5000);
+            setLoadingText('Wysyłanie...');
         }
     }
 
@@ -126,7 +140,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                 </div>
                 <div className="flex flex-row justify-center">
                     <div className="flex flex-col items-center">
-                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}>
+                        <div className={`h-14 aspect-square rounded-full`}>
                             <img src={match.team_one && match.team_one.flag}></img>
                         </div>
                         <div className="mt-2">
@@ -137,7 +151,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                         vs.
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className={`${bgcolor} h-14 aspect-square rounded-full`}>
+                        <div className={`h-14 aspect-square rounded-full`}>
                             <img src={match.team_two && match.team_two.flag}></img>
                         </div>
                         <div className="mt-2">
@@ -219,6 +233,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                             </label>
                         </div>
                     </div>
+                    {!isDisplayMatchInfo && 
                     <div className="text-center">
                         <input
                             className={`${bgcolor} ${textColor} transition ease-in-out px-4 py-2 rounded-lg hover:scale-110 `}
@@ -226,9 +241,9 @@ export default function MatchBetForm({ matchData, predictionData }) {
                             value={isLoading ? loadingText : "Obstaw"}
                         />
                         {dateError && <p className="text-red">{dateError}</p>}
-                    </div>
+                    </div>}
                     { isDisplayMatchInfo &&
-                        <div className='flex flex-row items-center text-sm justify-center mt-5' onClick={navigateToMatch}>
+                        <div className='flex flex-row items-center text-sm justify-center mt-5 cursor-pointer animate-bounce text-yellow' onClick={navigateToMatch}>
                             <p className='mr-1'>Sprawdź jak typowali pozostali</p>
                             <FaArrowRight />
                         </div>
