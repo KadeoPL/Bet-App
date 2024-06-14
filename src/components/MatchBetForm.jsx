@@ -22,6 +22,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
     const navigate = useNavigate();
+    const isDisplayMatchInfo = false;
 
 
     function setColorFromGroup(group) {
@@ -226,10 +227,12 @@ export default function MatchBetForm({ matchData, predictionData }) {
                         />
                         {dateError && <p className="text-red">{dateError}</p>}
                     </div>
-                    <div className='flex flex-row items-center text-sm justify-center mt-5' onClick={navigateToMatch}>
-                        <p className='mr-1'>Sprawdź jak typowali pozostali</p>
-                        <FaArrowRight />
-                    </div>
+                    { isDisplayMatchInfo &&
+                        <div className='flex flex-row items-center text-sm justify-center mt-5' onClick={navigateToMatch}>
+                            <p className='mr-1'>Sprawdź jak typowali pozostali</p>
+                            <FaArrowRight />
+                        </div>
+                    }
                 </form>
             </div>
         </div>
