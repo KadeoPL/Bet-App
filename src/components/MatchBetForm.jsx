@@ -22,7 +22,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
     const navigate = useNavigate();
-    const [isDisplayMatchInfo, setIsDisplayMatchInfo] = useState(false)
+    const [isStartMatch, setIsStartMatch] = useState(false)
 
 
     function setColorFromGroup(group) {
@@ -64,9 +64,9 @@ export default function MatchBetForm({ matchData, predictionData }) {
         const today = new Date();
     
         if (today > matchDate) {
-            setIsDisplayMatchInfo(true);
+            setIsStartMatch(true);
         } else {
-            setIsDisplayMatchInfo(false);
+            setIsStartMatch(false);
         }
     }, [match]);
 
@@ -160,6 +160,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                     </div>
                 </div>
                 <form onSubmit={onSubmit}>
+                    <fieldset disabled={isStartMatch ? 'disabled' : ''}>
                     <div className="flex flex-row justify-center gap-4 py-4">
                         <div className="flex flex-col text-center">
                             <div className="flex flex-row justify-center">
@@ -233,7 +234,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                             </label>
                         </div>
                     </div>
-                    {!isDisplayMatchInfo && 
+                    {!isStartMatch && 
                     <div className="text-center">
                         <input
                             className={`${bgcolor} ${textColor} transition ease-in-out px-4 py-2 rounded-lg hover:scale-110 `}
@@ -242,12 +243,13 @@ export default function MatchBetForm({ matchData, predictionData }) {
                         />
                         {dateError && <p className="text-red">{dateError}</p>}
                     </div>}
-                    { isDisplayMatchInfo &&
-                        <div className='flex flex-row items-center text-sm justify-center mt-5 cursor-pointer animate-bounce text-yellow' onClick={navigateToMatch}>
+                    { isStartMatch &&
+                        <div className='flex flex-row items-center text-sm justify-center mt-5 cursor-pointer text-yellow' onClick={navigateToMatch}>
                             <p className='mr-1'>Sprawdź jak typowali pozostali</p>
                             <FaArrowRight />
                         </div>
                     }
+                    </fieldset>
                 </form>
             </div>
         </div>
