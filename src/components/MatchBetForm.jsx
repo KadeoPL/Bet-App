@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { UserContext } from "../context/UserContext";
 import { addPrediction } from "../services/matchesService";
 import ClockIcon from "../img/icons/clock.svg";
@@ -23,6 +23,8 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
     const navigate = useNavigate();
     const [isStartMatch, setIsStartMatch] = useState(false)
+    const [matchDay, setMatchDay] = useState('');
+    const days = useMemo(() => ['Ndz', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'], []);
 
 
     function setColorFromGroup(group) {
@@ -70,9 +72,15 @@ export default function MatchBetForm({ matchData, predictionData }) {
         }
     }, [match]);
 
+    const getDayOfWeek = useCallback (() => {
+        const date = new Date(match.date);
+        setMatchDay(days[date.getDay()]);
+    }, [match, days]);
+
     useEffect(() => {
         setMatch(matchData);
         setColorFromGroup(matchData.group);
+        getDayOfWeek();
         checkDateToDisplayMatchInfo()
         if (predictionData) {
             if(predictionData)
@@ -90,7 +98,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                 user_id: user.id,
             }));
         }
-    }, [matchData, user, predictionData, checkDateToDisplayMatchInfo]);
+    }, [matchData, user, predictionData, checkDateToDisplayMatchInfo, getDayOfWeek]);
 
     function onSubmit(event) {
         event.preventDefault();
@@ -131,7 +139,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
         <div className='font-manrope flex flex-col bg-blue bg-opacity-50 w-72 rounded-xl overflow-hidden shadow-2xl text-white'>
             <div className={`${bgcolor} flex flex-row justify-between ${textColor} py-2 px-4`}>
                 <div className="font-teko text-2xl font-bold">{match.group}</div>
-                <div className="flex flex-col justify-center text- font-medium">{match.date}</div>
+                <div className="flex flex-col justify-center text-sm font-medium">{matchDay}, {match.date}</div>
             </div>
             <div className="px-6 py-3">
                 <div className="flex flex-row justify-center items-center mb-4">
