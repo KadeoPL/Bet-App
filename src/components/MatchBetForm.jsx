@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
+import { useState, useEffect, useContext} from 'react';
 import { UserContext } from "../context/UserContext";
 import { addPrediction } from "../services/matchesService";
-import ClockIcon from "../img/icons/clock.svg";
 import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import { setColorsByGroup } from '../utils/setColorsByGroup';
+import { checkIfMatchStarted } from '../utils/checkIfMatchStarted';
+import MatchTime from './Match/MatchTime';
+import MatchHeader from './Match/MatchHeader';
+import TeamInfo from './Match/TeamInfo';
 
 export default function MatchBetForm({ matchData, predictionData }) {
     const { user } = useContext(UserContext);
@@ -21,67 +25,17 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const [dateError, setDateError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
-    const navigate = useNavigate();
     const [isStartMatch, setIsStartMatch] = useState(false)
-    const [matchDay, setMatchDay] = useState('');
-    const days = useMemo(() => ['Ndz', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'], []);
-
-
-    function setColorFromGroup(group) {
-        switch (group) {
-            case 'Grupa A':
-                setBgColor('bg-green');
-                setTextColor('text-white');
-                break;
-            case 'Grupa B':
-                setBgColor('bg-darkblue');
-                setTextColor('text-white');
-                break;
-            case 'Grupa C':
-                setBgColor('bg-red');
-                setTextColor('text-white');
-                break;
-            case 'Grupa D':
-                setBgColor('bg-yellow');
-                setTextColor('text-black');
-                break;
-            case 'Grupa E':
-                setBgColor('bg-lightblue');
-                setTextColor('text-black');
-                break;
-            case 'Grupa F':
-                setBgColor('bg-black');
-                setTextColor('text-white');
-                break;
-            default:
-                setBgColor('bg-blue');
-                setTextColor('text-white');
-                break;
-        }
-    }
-
-    const checkDateToDisplayMatchInfo = useCallback(() => {
-        const matchDateTimeString = `${match.date}T${match.time}`;
-        const matchDate = new Date(matchDateTimeString);
-        const today = new Date();
     
-        if (today > matchDate) {
-            setIsStartMatch(true);
-        } else {
-            setIsStartMatch(false);
-        }
-    }, [match]);
-
-    const getDayOfWeek = useCallback (() => {
-        const date = new Date(match.date);
-        setMatchDay(days[date.getDay()]);
-    }, [match, days]);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        
         setMatch(matchData);
-        setColorFromGroup(matchData.group);
-        getDayOfWeek();
-        checkDateToDisplayMatchInfo()
+        setBgColor(setColorsByGroup(matchData.group).bgColor);
+        setTextColor(setColorsByGroup(matchData.group).textColor);
+        setIsStartMatch(checkIfMatchStarted(matchData));
+        
         if (predictionData) {
             if(predictionData)
             setPrediction({
@@ -98,16 +52,13 @@ export default function MatchBetForm({ matchData, predictionData }) {
                 user_id: user.id,
             }));
         }
-    }, [matchData, user, predictionData, checkDateToDisplayMatchInfo, getDayOfWeek]);
+    }, [matchData, user, predictionData]);
 
     function onSubmit(event) {
         event.preventDefault();
-        const matchDateTimeString = `${match.date}T${match.time}`;
-        const matchDate = new Date(matchDateTimeString);
-        const today = new Date();
         setDateError('');
 
-        if (today > matchDate) {
+        if (isStartMatch) {
             setDateError('Nie możesz obstawić tego meczu');
         } else {
             addPrediction(prediction);
@@ -137,37 +88,11 @@ export default function MatchBetForm({ matchData, predictionData }) {
 
     return (
         <div className='font-manrope flex flex-col bg-blue bg-opacity-50 w-72 rounded-xl overflow-hidden shadow-2xl text-white'>
-            <div className={`${bgcolor} flex flex-row justify-between ${textColor} py-2 px-4`}>
-                <div className="font-teko text-2xl font-bold">{match.group}</div>
-                <div className="flex flex-col justify-center text-sm font-medium">{matchDay}, {match.date}</div>
-            </div>
+            {(match.group && match.date) && <MatchHeader group={match.group} date={match.date} />}
             <div className="px-6 py-3">
-                <div className="flex flex-row justify-center items-center mb-4">
-                    <img src={ClockIcon} alt="Ikona" className="inline-block mr-2" />
-                    {match.time}
-                </div>
-                <div className="flex flex-row justify-center">
-                    <div className="flex flex-col items-center">
-                        <div className={`h-14 aspect-square rounded-full`}>
-                            <img src={match.team_one && match.team_one.flag}></img>
-                        </div>
-                        <div className="mt-2">
-                            <span className='font-light'>{match.team_one && match.team_one.name}</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col justify-end text-xs px-7">
-                        vs.
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <div className={`h-14 aspect-square rounded-full`}>
-                            <img src={match.team_two && match.team_two.flag}></img>
-                        </div>
-                        <div className="mt-2">
-                            <span className='font-light'>{match.team_two && match.team_two.name}</span>
-                        </div>
-                    </div>
-                </div>
-                <form onSubmit={onSubmit}>
+                {match.time && <MatchTime time={match.time} />}
+                {(match.team_one && match.team_two) && <TeamInfo team_one={match.team_one} team_two={match.team_two}/>}
+                <form className='flex flex-col items-center' onSubmit={onSubmit}>
                     <fieldset disabled={isStartMatch ? 'disabled' : ''}>
                     <div className="flex flex-row justify-center gap-4 py-4">
                         <div className="flex flex-col text-center">
