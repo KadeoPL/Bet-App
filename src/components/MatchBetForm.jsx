@@ -8,6 +8,7 @@ import MatchTime from './Match/MatchTime';
 import MatchHeader from './Match/MatchHeader';
 import TeamInfo from './Match/TeamInfo';
 import MatchSubmitButton from './Match/MatchSubmitButton';
+import MatchPredicionForm from './Match/MatchPredictionForm';
 
 export default function MatchBetForm({ matchData, predictionData }) {
     const { user } = useContext(UserContext);
@@ -26,12 +27,10 @@ export default function MatchBetForm({ matchData, predictionData }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        
         setMatch(matchData);
         setIsStartMatch(checkIfMatchStarted(matchData));
-        
+    
         if (predictionData) {
-            if(predictionData)
             setPrediction({
                 match_id: matchData.id,
                 user_id: user.id,
@@ -47,31 +46,38 @@ export default function MatchBetForm({ matchData, predictionData }) {
             }));
         }
     }, [matchData, user, predictionData]);
-
+    
     function onSubmit(event) {
         event.preventDefault();
-
+    
         if (!isStartMatch) {
-            addPrediction(prediction);
+            setLoadingText('Wysyłanie...');
             setIsLoading(true);
-            setTimeout(() => {
-                setLoadingText('Wysłano');
-            }, 3000);
-            
+    
+            addPrediction(prediction)
+                .then(() => {
+                    setLoadingText('Wysłano');
+                })
+                .catch((error) => {
+                    console.error('Błąd podczas dodawania predykcji:', error);
+                    setLoadingText(error);
+                })
             setTimeout(() => {
                 setIsLoading(false);
-            }, 5000);
-            setLoadingText('Wysyłanie...');
+            }, 3000);
         }
     }
-
+    
+    
+    
     function handleInputChange(event) {
         const { name, value } = event.target;
-        setPrediction({
-            ...prediction,
+        setPrediction(prev => ({
+            ...prev,
             [name]: name === 'result' ? parseInt(value) : value
-        });
+        }));
     }
+    
 
     const navigateToMatch = () => {
         navigate('/matchinfo', { state: { id: match.id, team_one: match.team_one, team_two: match.team_two, group: match.group} });
@@ -108,6 +114,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                             </div>
                         </div>
                     </div>
+                    {(match.id && prediction.result === undefined) && <MatchPredicionForm matchId={match.id} result={prediction.result} team_one={match.team_one} team_two={match.team_two} onChange={handleInputChange} />}
                     <div className="text-center mb-4">
                         <div className="mb-4 mt-6">Wytypuj zwycięzcę:</div>
                         <div className="flex flex-row text-sm justify-center">

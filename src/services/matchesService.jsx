@@ -17,6 +17,7 @@ export async function addPrediction(data) {
     await axios.post('https://bet-app-livid.vercel.app/api/predictions', data);
   } catch (error) {
     console.error('Error sending data:', error);
+    throw new Error(error.response.status);
   }
 }
 
