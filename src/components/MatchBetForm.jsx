@@ -2,19 +2,16 @@
 import { useState, useEffect, useContext} from 'react';
 import { UserContext } from "../context/UserContext";
 import { addPrediction } from "../services/matchesService";
-import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
-import { setColorsByGroup } from '../utils/setColorsByGroup';
 import { checkIfMatchStarted } from '../utils/checkIfMatchStarted';
 import MatchTime from './Match/MatchTime';
 import MatchHeader from './Match/MatchHeader';
 import TeamInfo from './Match/TeamInfo';
+import MatchSubmitButton from './Match/MatchSubmitButton';
 
 export default function MatchBetForm({ matchData, predictionData }) {
     const { user } = useContext(UserContext);
     const [match, setMatch] = useState({});
-    const [bgcolor, setBgColor] = useState('');
-    const [textColor, setTextColor] = useState('');
     const [prediction, setPrediction] = useState({
         match_id: null,
         user_id: null,
@@ -22,7 +19,6 @@ export default function MatchBetForm({ matchData, predictionData }) {
         team_two_goals: '',
         result: null,
     });
-    const [dateError, setDateError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Wysyłanie...');
     const [isStartMatch, setIsStartMatch] = useState(false)
@@ -32,8 +28,6 @@ export default function MatchBetForm({ matchData, predictionData }) {
     useEffect(() => {
         
         setMatch(matchData);
-        setBgColor(setColorsByGroup(matchData.group).bgColor);
-        setTextColor(setColorsByGroup(matchData.group).textColor);
         setIsStartMatch(checkIfMatchStarted(matchData));
         
         if (predictionData) {
@@ -56,11 +50,8 @@ export default function MatchBetForm({ matchData, predictionData }) {
 
     function onSubmit(event) {
         event.preventDefault();
-        setDateError('');
 
-        if (isStartMatch) {
-            setDateError('Nie możesz obstawić tego meczu');
-        } else {
+        if (!isStartMatch) {
             addPrediction(prediction);
             setIsLoading(true);
             setTimeout(() => {
@@ -167,21 +158,7 @@ export default function MatchBetForm({ matchData, predictionData }) {
                             </label>
                         </div>
                     </div>
-                    {!isStartMatch && 
-                    <div className="text-center">
-                        <input
-                            className={`${bgcolor} ${textColor} transition ease-in-out px-4 py-2 rounded-lg hover:scale-110 `}
-                            type="submit"
-                            value={isLoading ? loadingText : "Obstaw"}
-                        />
-                        {dateError && <p className="text-red">{dateError}</p>}
-                    </div>}
-                    { isStartMatch &&
-                        <div className='flex flex-row items-center text-sm justify-center mt-5 cursor-pointer text-yellow' onClick={navigateToMatch}>
-                            <p className='mr-1'>Sprawdź jak typowali pozostali</p>
-                            <FaArrowRight />
-                        </div>
-                    }
+                    {match.group && <MatchSubmitButton group={match.group} isStartMatch={isStartMatch} isLoading={isLoading} loadingText={loadingText} onClick={navigateToMatch}/>}
                     </fieldset>
                 </form>
             </div>
