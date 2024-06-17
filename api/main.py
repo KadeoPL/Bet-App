@@ -32,11 +32,6 @@ def require_auth(func):
     wrapper.__name__ = func.__name__
     return wrapper
 
-@app.route("/api/crontest")
-def crontest():
-    print(f"[{request.remote_addr}] GET /api/crontest")
-    return jsonify({"message": "jest git"})
-
 @app.route("/api/matches", methods=["GET"])
 def get_matches():
     print(f"[{request.remote_addr}] GET /api/matches request")
@@ -80,14 +75,15 @@ def get_users_result():
     try:
         result = (
             supabase.table("users")
-            .select("login", "points")
-            .order("points", desc=True)
+            .select("login", "points", "correct_exact_result")
             .execute()
         )
+        users = result.data
+        users = sorted(users, key=lambda x: (-x['points'], -x['correct_exact_result']))
     except Exception as e:
         print(f"[{request.remote_addr}] Error fetching users: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
-    return result.model_dump_json()
+    return users
 
 
 @app.route("/api/login", methods=["POST"])
@@ -322,6 +318,7 @@ def update_result():
         user_team_two_goals = user_prediction.get("team_two_goals")
 
         points = 0
+        exact_result = 0
         if result == user_result:
             points += 1
         if (
@@ -329,15 +326,18 @@ def update_result():
             and user_team_two_goals == team_two_goals
         ):
             points += 3
+            exact_result += 1
 
-        user_points = (
-            supabase.table("users").select("points").eq("id", user_id).execute()
+        result = (
+            supabase.table("users").select("points", "correct_exact_result").eq("id", user_id).execute()
         )
-        user_points = user_points.data[0]["points"]
+        user_points = result.data[0]["points"]
+        user_exact_results = result.data[0]["correct_exact_result"]
         finished_user_points = user_points + points
+        finished_exact_results = user_exact_results + exact_result
         result = (
             supabase.table("users")
-            .update({"points": finished_user_points})
+            .update({"points": finished_user_points, "correct_exact_result": finished_exact_results})
             .eq("id", user_id)
             .execute()
         )
