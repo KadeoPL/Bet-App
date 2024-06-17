@@ -1,47 +1,15 @@
 import { useNavigate } from "react-router-dom"
 import { MdOutlineArrowBackIos } from "react-icons/md";
 import { useLocation } from "react-router-dom";
-import MatchDetails from "../components/MatchDetails";
 import { useState, useEffect } from "react";
 import { getOtherPrediction } from "../services/matchesService";
+import MatchWithoutPredictions from "../components/MatchWithoutPredictions";
 
 export default function MatchInfo() {
     const navigate = useNavigate();
     const location = useLocation();
     const matchData = location.state
     const [othersPredictions, setOthersPredictions] = useState([])
-
-    // const predictionArray = [
-    //   {
-    //     result: 2,
-    //     team_one_goals: 1,
-    //     team_two_goals: 2,
-    //     user_id: {
-    //       login: 'XXX',
-    //     }
-    //   },
-    //   {
-    //     result: 1,
-    //     team_one_goals: 3,
-    //     team_two_goals: 1,
-    //     user_id: {
-    //       login: 'XXX',
-    //     }
-    //   },
-    //   {
-    //     result: 0,
-    //     team_one_goals: 3,
-    //     team_two_goals: 1,
-    //     user_id: {
-    //       login: 'XXX',
-    //     }
-    //   }
-      
-    // ];
-
-    // useEffect(() => {
-    //   setOthersPredictions(predictionArray)
-    // }, [])
 
     const backNavigate = () => {
         navigate('/matches')
@@ -78,8 +46,8 @@ export default function MatchInfo() {
             <div>
                 <div
                 onClick={backNavigate}
-                className="flex flex-row items-center text-white hover:scale-110">
-                <MdOutlineArrowBackIos />Powrót</div>
+                className="flex flex-row items-center text-white cursor-pointer">
+                <MdOutlineArrowBackIos /></div>
             </div>
             
             <div className=" flex flex-col items-center">
@@ -87,23 +55,17 @@ export default function MatchInfo() {
             <div className="mt-5 text-white uppercase text-sm tracking-wide">Informacje o meczu</div>
             </div>
             <div className="mt-5">
-                <MatchDetails
-                group={matchData.group}
-                team_one_name={matchData.team_one.name}
-                team_one_flag={matchData.team_one.flag}
-                team_two_name={matchData.team_two.name}
-                team_two_flag={matchData.team_two.flag}
-                />
+                <MatchWithoutPredictions match={matchData} />
             </div>
             <div className="flex flex-row items-start w-full">
-            <div className="mt-8 text-white uppercase text-sm tracking-wide mb-7">Typy pozostałych graczy</div>
+            <div className="mt-8 text-white uppercase text-sm tracking-wide mb-5">Typy pozostałych graczy</div>
             </div>
             <div className="text-white">
             {othersPredictions.map((otherPrediction, index) => {
               const { bgColor, text } = getResultDetails(otherPrediction.result);
               return (
                 <div className='w-72' key={index}>
-                  <div className="flex flex-row justify-between items-center py-3 px-3 bg-blue bg-opacity-50 rounded-xl mb-5">
+                  <div className="flex flex-row justify-between items-center py-3 px-3 bg-blue bg-opacity-50 rounded-xl mb-3">
                     <div className="font-bold text-xs">{otherPrediction.user_id.login}</div>
                     <div className="flex flex-row text-sm">
                       <div className="bg-white text-black px-2 py-1 font-bold rounded-lg mr-2">

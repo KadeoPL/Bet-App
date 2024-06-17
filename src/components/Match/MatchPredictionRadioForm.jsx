@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export default function MatchPredicionForm({ matchId, result, team_one, team_two, onChange }) {
+export default function MatchPredicionRadioForm({ matchId, result, team_one, team_two, onChange }) {
     return (
         <div className="text-center mb-4">
             <div className="mb-4 mt-6">Wytypuj zwycięzcę:</div>
@@ -55,9 +55,9 @@ export default function MatchPredicionForm({ matchId, result, team_one, team_two
     );
 }
 
-MatchPredicionForm.propTypes = {
+MatchPredicionRadioForm.propTypes = {
     matchId: PropTypes.number.isRequired,
-    result: PropTypes.any.isRequired,
+    result: PropTypes.any,
     team_one: PropTypes.object.isRequired,
     team_two: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,

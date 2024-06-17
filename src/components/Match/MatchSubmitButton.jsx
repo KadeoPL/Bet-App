@@ -6,16 +6,11 @@ import PropTypes from 'prop-types';
 export default function MatchSubmitButton({group, isStartMatch, isLoading, loadingText, onClick}) {
     const [bgColor, setBgColor] = useState('')
     const [textColor, setTextColor] = useState('')
-    const [dateError, setDateError] = useState('');
 
     useEffect(() => {
         const colors = setColorsByGroup(group);
         setBgColor(colors.bgColor);
         setTextColor(colors.textColor);
-
-        if(isStartMatch) {
-            setDateError('Nie możesz obstawić tego meczu');
-        }
     }, [group, isStartMatch]);
     
     return (
@@ -27,7 +22,6 @@ export default function MatchSubmitButton({group, isStartMatch, isLoading, loadi
                     type="submit"
                     value={isLoading ? loadingText : "Obstaw"}
                 />
-                {dateError && <p className="text-red">{dateError}</p>}
             </div> )}
             { isStartMatch &&
                         <div className='flex flex-row items-center text-sm justify-center mt-5 cursor-pointer text-yellow' onClick={onClick}>
