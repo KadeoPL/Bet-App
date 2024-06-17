@@ -1,22 +1,15 @@
-import { useEffect } from "react";
-import SidebarNav from "../components/Sidebar"
-import Array from "../components/Array"
+
+import LeaderBoard from "../components/LeaderBoard"
+import MobileNav from "../components/MobileNav"
 
 export default function Scoreboard(){
 
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
-
   return (
-    <> 
-      <SidebarNav />
-      <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-12 font-manrope '>
-        <Array />
+    <div> 
+      <MobileNav />
+      <div className='min-h-screen w-full bg-blue bg-bgmain bg-cover bg-blend-multiply bg-top bg-no-repeat bg-fixed p-4 font-manrope pb-28'>
+        <LeaderBoard />
       </div>
-    </>
+    </div>
   )
 }

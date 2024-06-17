@@ -16,6 +16,9 @@ export default {
       'lightblue': '#D3E2EC',
       'black': '#201E23',
       'transparent': 'transparent',
+      'lightgray': '#bfcadb',
+      'brown': '#FF8228'
+
     },
     fontFamily: {
       teko: ["Teko", "sans-serif"],
