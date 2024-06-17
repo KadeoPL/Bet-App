@@ -36,9 +36,7 @@ def require_auth(func):
 def get_matches():
     print(f"[{request.remote_addr}] GET /api/matches request")
     try:
-        db_response = (
-            supabase.table("matches")
-            .select(
+        db_response = supabase.table("matches").select(
                 "id",
                 "team_one:teams!matches_team_one_fkey(name, flag)",
                 "team_two:teams!matches_team_two_fkey(name, flag)",
@@ -48,11 +46,8 @@ def get_matches():
                 "team_two_goals",
                 "group",
                 "matchday",
-            )
-            .eq("finished", False)
-            .order("id")
-            .execute()
-        )
+            ).eq("finished", False).order("id").execute()
+        
         if not db_response.data:
             return jsonify({"error": "Could not get matches"}), 500
         return db_response.data, 200
@@ -64,12 +59,7 @@ def get_matches():
 def get_points_for_user(id):
     print(f"[{request.remote_addr}] GET /api/points/{id} request")
     try:
-        db_response = (
-            supabase.table("users")
-            .select("points")
-            .eq("id", id)
-            .execute()
-        )
+        db_response = supabase.table("users").select("points").eq("id", id).execute()
         if not db_response.data:
             return jsonify({"error": "Wrong user ID"}), 404
         return db_response.data[0], 200
@@ -77,22 +67,19 @@ def get_points_for_user(id):
         print(f"[{request.remote_addr}] Error getting points for user {id}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
-@app.route("/api/results")
-def get_users_result():
-    print(f"[{request.remote_addr}] GET /api/results request")
+@app.route("/api/scoreboard")
+def get_scoreboard():
+    print(f"[{request.remote_addr}] GET /api/scoreboard request")
     try:
-        db_response = (
-            supabase.table("users")
-            .select("login", "points")
-            .order("points", desc=True)
-            .execute()
-        )
+        db_response = supabase.table("users").select("login", "points", "correct_exact_result").execute()
         if not db_response.data:
-            return jsonify({"error": "Could not user results"}), 500
-        return db_response.data, 200
+            return jsonify({"error": "Could not get scoreboard"}), 500
+        users = db_response.data
+        users = sorted(users, key=lambda x: (-x['points'], -x['correct_exact_result']))
     except Exception as e:
         print(f"[{request.remote_addr}] Error fetching users: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
+    return users
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -101,12 +88,7 @@ def login():
     print(f"[{request.remote_addr}] POST /api/login request for user: {login}")
     password = data["password"]
     try:
-        db_response = (
-            supabase.table("users")
-            .select("id", "password", "points")
-            .eq("login", login)
-            .execute()
-        )
+        db_response = supabase.table("users").select("id", "password", "points").eq("login", login).execute()
         if not db_response.data:
             print(f"[{request.remote_addr}] Wrong username for login: {login}")
             return jsonify({"error": "Wrong username"}), 404
@@ -135,13 +117,7 @@ def post_knockout_matches():
         team_one = match["team_one"]
         team_two = match["team_two"]
         try:
-            team_one_id = (
-                supabase.table("teams")
-                .select("id")
-                .eq("name", team_one)
-                .execute()
-                .data[0]["id"]
-            )
+            team_one_id = supabase.table("teams").select("id").eq("name", team_one).execute().data[0]["id"]
             if team_one_id is None:
                 print(f"[{request.remote_addr}] Wrong team name: {team_one}")
                 return jsonify({"error": "Wrong username"}), 404
@@ -149,13 +125,7 @@ def post_knockout_matches():
             print(f"[{request.remote_addr}] Error getting id for team {team_one}: {e}")
             return jsonify({"error": "Internal Server Error"}), 500
         try:
-            team_two_id = (
-                supabase.table("teams")
-                .select("id")
-                .eq("name", team_two)
-                .execute()
-                .data[0]["id"]
-            )
+            team_two_id = supabase.table("teams").select("id").eq("name", team_two).execute().data[0]["id"]
             if team_two_id is None:
                 print(f"[{request.remote_addr}] Wrong team name: {team_two}")
                 return jsonify({"error": "Wrong username"}), 404
@@ -165,13 +135,11 @@ def post_knockout_matches():
         
         try:
             db_response = supabase.table("matches").insert(
-                {
-                    "team_one": team_one_id,
-                    "team_two": team_two_id,
-                    "date": date,
-                    "time": time,
-                    "matchday": round,
-                }
+                {"team_one": team_one_id,
+                "team_two": team_two_id, 
+                "date": date,
+                "time": time,
+                "matchday": round}
             ).execute()
         except Exception as e:
             print(f"[{request.remote_addr}] Error login user {login}: {e}")
@@ -179,7 +147,7 @@ def post_knockout_matches():
         print(f"[{request.remote_addr}] Inserted knockout match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{round}")
         response[num] = db_response.data
 
-    return jsonify(response)
+    return jsonify(response), 200
 
 @app.route("/api/group_matches", methods=["POST"])
 @require_auth
@@ -196,50 +164,53 @@ def post_group_matches():
         team_one = match["team_one"]
         team_two = match["team_two"]
         group = match["group"]
-        team_one_id = (
-            supabase.table("teams")
-            .select("id")
-            .eq("name", team_one)
-            .execute()
-            .data[0]["id"]
-        )
-        team_two_id = (
-            supabase.table("teams")
-            .select("id")
-            .eq("name", team_two)
-            .execute()
-            .data[0]["id"]
-        )
-        db_response = supabase.table("matches").insert(
-            {
-                "team_one": team_one_id,
-                "team_two": team_two_id,
-                "date": date,
-                "time": time,
-                "matchday": round,
-                "group": group
-            }
-        ).execute()
+        try:
+            team_one_id = supabase.table("teams").select("id").eq("name", team_one).execute().data[0]["id"]
+        except Exception as e:
+            print(f"[{request.remote_addr}] Error getting id for team {team_one}: {e}")
+            return jsonify({"error": "Internal Server Error"}), 500
+        try:
+            team_two_id = supabase.table("teams").select("id").eq("name", team_two).execute().data[0]["id"]
+        except Exception as e:
+            print(f"[{request.remote_addr}] Error getting id for team {team_two}: {e}")
+            return jsonify({"error": "Internal Server Error"}), 500
+        
+        try:
+            db_response = supabase.table("matches").insert(
+                {
+                    "team_one": team_one_id,
+                    "team_two": team_two_id,
+                    "date": date,
+                    "time": time,
+                    "matchday": round,
+                    "group": group
+                }
+            ).execute()
+        except Exception as e:
+            print(f"[{request.remote_addr}] Error inserting group matches {match}: {e}")
+            return jsonify({"error": "Internal Server Error"}), 500
+        
         print(f"[{request.remote_addr}] Inserted group match:\n{team_one}({team_one_id})\n{team_two}({team_two_id})\n{date}\n{time}\n{round}")
         response[num] = db_response.data
 
-    return jsonify(response)
+    return jsonify(response), 200
 
 @app.route("/api/teams", methods=["POST"])
 @require_auth
 def post_teams():
     data = request.get_json()
+    api_response = dict()
     for group in data:
         teams = group["drużyny"]
         for team in teams:
             flag_source = os.path.join("src", "img", "flags" f"{team}.jpg")
-            result = (
-                supabase.table("teams")
-                .insert({"name": team, "flag": flag_source})
-                .execute()
-            )
-    return result.model_dump_json()
-
+            try:
+                supabase.table("teams").insert({"name": team, "flag": flag_source}).execute()
+                api_response[team] = flag_source
+            except Exception as e:
+                print(f"[{request.remote_addr}] Error adding team: {team}: {e}")
+                return jsonify({"error": "Internal Server Error"}), 500
+    return jsonify(api_response), 200
 
 @app.route("/api/predictions", methods=["POST"])
 def post_predictions():
@@ -252,13 +223,12 @@ def post_predictions():
         data.get("result"),
     )
     print(f"[{request.remote_addr}] POST /api.predictions/ with data:\n{data}")
-    already_predicted = (
-        supabase.table("predictions")
-        .select("id", count="exact")
-        .match({"match_id": match_id, "user_id": user_id})
-        .execute()
-    )
-    if already_predicted.count > 0:
+    try:
+        already_predicted = supabase.table("predictions").select("id").match({"match_id": match_id, "user_id": user_id}).execute()
+    except Exception as e:
+        print(f"[{request.remote_addr}] Error getting user predictions for user id: {user_id}, match id: {match_id}: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+    if already_predicted.data is not None:
         print(f"[{request.remote_addr}] Match is already predicted by user, updating")
         to_update = dict()
         if team_one_goals and team_two_goals:
@@ -266,97 +236,97 @@ def post_predictions():
             to_update["team_two_goals"] = team_two_goals
         if result is not None:
             to_update["result"] = result
-
-        result = (
-            supabase.table("predictions")
-            .update(to_update)
-            .match({"match_id": match_id, "user_id": user_id})
-            .execute()
-        )
-        print(
-            f"[{request.remote_addr}] Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
-        )
-
-        return result.model_dump_json()
-
+        try:
+            db_response = supabase.table("predictions").update(to_update).match({"match_id": match_id, "user_id": user_id}).execute()
+        except Exception as e:
+            print(f"[{request.remote_addr}] Error updating user predictions for user id: {user_id}, match id: {match_id}: {e}")
+            return jsonify({"error": "Internal Server Error"}), 500
+        print(f"[{request.remote_addr}] Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}")
+        return db_response.data[0], 200
+    
     print(f"[{request.remote_addr}] Match is not already predicted by user, inserting")
-    result = (
-        supabase.table("predictions")
-        .insert(
-            {
-                "match_id": match_id,
-                "user_id": user_id,
-                "team_one_goals": team_one_goals,
-                "team_two_goals": team_two_goals,
-                "result": result,
-            }
-        )
-        .execute()
-    )
-    print(
-        f"[{request.remote_addr}] Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}"
-    )
-    return result.model_dump_json()
+    try:
+        db_response = supabase.table("predictions").insert(
+                {
+                    "match_id": match_id,
+                    "user_id": user_id,
+                    "team_one_goals": team_one_goals,
+                    "team_two_goals": team_two_goals,
+                    "result": result,
+                }).execute()
+    except Exception as e:
+        print(f"[{request.remote_addr}] Error getting user predictions for user id: {user_id}, match id: {match_id}: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+    print(f"[{request.remote_addr}] Update prediction for:\n{user_id}\n{match_id}\n{team_one_goals}\n{team_two_goals}\n{result}")
+    return db_response.data, 200
 
 
 @app.route("/api/predictions/<user_id>")
 def get_predictions(user_id):
     print(f"[{request.remote_addr}] GET /api/predictions/{user_id} request")
-    result = (
-        supabase.table("predictions")
-        .select(
-            "match_id",
-            "result",
-            "team_one_goals",
-            "team_two_goals",
-        )
-        .eq("user_id", user_id)
-        .execute()
-    )
-    return result.model_dump_json()
+    try:
+        result = supabase.table("predictions").select(
+                "match_id",
+                "result",
+                "team_one_goals",
+                "team_two_goals",
+            ).eq("user_id", user_id).execute()
+    except Exception as e:
+        print(f"[{request.remote_addr}] Error getting user predictions for user id: {user_id}: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+    return result.data, 200
 
 @app.route("/api/match_predictions/<match_id>")
 def get_match_predictions(match_id):
     print(f"[{request.remote_addr}] GET /api/match_predictions/{match_id} request")
 
-    result = supabase.table("matches").select("date", "time").eq("id", match_id).execute().model_dump()
-    date = result["data"][0]["date"]
-    time = result["data"][0]["time"]
+    result = supabase.table("matches").select("date", "time").eq("id", match_id).execute()
+    date = result.data[0]["date"]
+    time = result.data[0]["time"]
     timezone = pytz.timezone('Europe/Warsaw')
     timedate = datetime.strptime((date + " " + time), "%Y-%m-%d %H:%M:%S")
     timedate = timezone.localize(timedate)
     if not timedate < datetime.now(timezone):
-        return json.dumps({"message": "Mecz się jeszcze nie rozpoczął"}, ensure_ascii=False), 404
-    all_predictions = supabase.table("predictions").select("user_id:users!predictions_user_id_fkey(login)", "result", "team_one_goals", "team_two_goals").eq("match_id", match_id).execute().model_dump_json()
-    return all_predictions, 200
-
+        return jsonify({"message": "Match hasn't started yet"}), 404
+    try:
+        all_predictions = supabase.table("predictions").select("user_id:users!predictions_user_id_fkey(login)", "result", "team_one_goals", "team_two_goals").eq("match_id", match_id).execute()
+    except Exception as e:
+        print(f"[{request.remote_addr}] Error getting all predictions for match id {match_id}: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+    return all_predictions.data, 200
 
 @app.route("/api/result", methods=["POST"])
 @require_auth
 def update_result():
-    data = request.get_json()
-    print(f"[{request.remote_addr}] POST /api/result data:\n{data}")
-    match_id, team_one_goals, team_two_goals = (
-        data["match_id"],
-        data["team_one_goals"],
-        data["team_two_goals"],
+    match_result_info = request.get_json()
+    print(f"[{request.remote_addr}] POST /api/result data:\n{match_result_info}")
+    match_id, real_team_one_goals, real_team_two_goals = (
+        match_result_info["match_id"],
+        match_result_info["team_one_goals"],
+        match_result_info["team_two_goals"],
     )
-    result = (
+
+    table_before = supabase.table("users").select("id", "login", "points", "correct_exact_result").execute()
+    filepath = os.path.join(os.path.expanduser("~"), "bet_app_user_table", f"table_before{match_id}.json")
+    with open(filepath, "w") as f:
+        json.dump(table_before.data, f)
+
+    match_result = (
         1
-        if team_one_goals > team_two_goals
+        if real_team_one_goals > real_team_two_goals
         else 2
-        if team_one_goals < team_two_goals
+        if real_team_one_goals < real_team_two_goals
         else 0
     )
     supabase.table("matches").update(
         {
-            "team_one_goals": team_one_goals,
-            "team_two_goals": team_two_goals,
-            "result": result,
+            "team_one_goals": real_team_one_goals,
+            "team_two_goals": real_team_two_goals,
+            "result": match_result,
         }
     ).eq("id", match_id).execute()
     print(
-        f"[{request.remote_addr}] Updated result for {match_id}, team_one_goals: {team_one_goals} team_two_goals: {team_two_goals}, result: {result}"
+        f"[{request.remote_addr}] Updated result for {match_id}, team_one_goals: {real_team_one_goals} team_two_goals: {real_team_two_goals}, result: {match_result}"
     )
     users_predictions = (
         supabase.table("predictions")
@@ -369,41 +339,47 @@ def update_result():
         .eq("match_id", match_id)
         .execute()
     )
+    response = dict()
     for user_prediction in users_predictions.data:
         user_id = user_prediction.get("user_id")
         user_result = user_prediction.get("result")
         user_team_one_goals = user_prediction.get("team_one_goals")
         user_team_two_goals = user_prediction.get("team_two_goals")
 
-        points = 0
-        exact_result = 0
-        if result == user_result:
-            points += 1
+        points_to_add = 0
+        exact_result_to_add = 0
+        if match_result == user_result:
+            points_to_add += 1
         if (
-            user_team_one_goals == team_one_goals
-            and user_team_two_goals == team_two_goals
+            user_team_one_goals == real_team_one_goals
+            and user_team_two_goals == real_team_two_goals
         ):
-            points += 3
-            exact_result += 1
+            points_to_add += 3
+            exact_result_to_add += 1
 
-        result = (
-            supabase.table("users").select("points", "correct_exact_result").eq("id", user_id).execute()
+        current_user_points = (
+            supabase.table("users").select("login", "points", "correct_exact_result").eq("id", user_id).execute()
         )
-        user_points = result.data[0]["points"]
-        user_exact_results = result.data[0]["correct_exact_result"]
-        finished_user_points = user_points + points
-        finished_exact_results = user_exact_results + exact_result
-        result = (
-            supabase.table("users")
-            .update({"points": finished_user_points, "correct_exact_result": finished_exact_results})
-            .eq("id", user_id)
-            .execute()
-        )
+        current_user_points = current_user_points.data[0]
+        username = current_user_points["login"]
+        user_points = current_user_points["points"]
+        user_exact_results = current_user_points["correct_exact_result"]
+        
+        final_user_points = user_points + points_to_add
+        final_exact_results = user_exact_results + exact_result_to_add
+
+        supabase.table("users").update({"points": final_user_points, "correct_exact_result": final_exact_results}).eq("id", user_id).execute()
+
         print(f"[{request.remote_addr}] update user points for user id {user_id}, because: user result = {user_result}, user_team_one_goals = {user_team_one_goals}, user_team_two_goals = {user_team_two_goals} \
-              user had {user_points}, achived {points} points, so has {finished_user_points} now")
+              user had {user_points}, achived {points_to_add} points, so has {final_user_points} now")
+        response[username] = {"achived_points": points_to_add, "achived_exact_result": exact_result_to_add}
 
-    return "jest git"
+    table_after = supabase.table("users").select("id", "login", "points", "correct_exact_result").execute()
+    filepath = os.path.join(os.path.expanduser("~"), "bet_app_user_table", f"table_after{match_id}.json")
+    with open(filepath, "w") as f:
+        json.dump(table_after.data, f, indent=4)
 
+    return jsonify(response)
 
 if __name__ == "__main__":
     app.run(debug=True)
