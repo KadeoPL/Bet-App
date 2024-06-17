@@ -17,8 +17,8 @@ import axios from 'axios'
   export async function getUsersToScoreboard() {
     try {
         const response = await axios.get(`https://bet-app-livid.vercel.app/api/users`);
-        const users = response.data;
-        return users.data
+        const users = response;
+        return users
     } catch (error) {
       console.log(error)
     }
