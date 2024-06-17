@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-// import { getUsersToScoreboard } from "../services/userService";
+import { getUsersToScoreboard } from "../services/userService";
 import { BsFillTrophyFill } from "react-icons/bs";
 import GoldBadge from "../img/icons/badge_gold.png"
 import SilverBadge from "../img/icons/badge_silver.png"
@@ -11,106 +11,106 @@ export default function LeaderBoard() {
   const [othersUsers, setOthersUsers] = useState([]);
   const { user } = useContext(UserContext);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const fetchedUsers = await getUsersToScoreboard();
-  //       setOthersUsers(fetchedUsers);
-  //     } catch (error) {
-  //       console.error("Error fetching users:", error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
-  const userArr = 
-    [
-      {
-        "correct_exact_result": 1,
-        "login": "dzordzo",
-        "points": 9
-      },
-      {
-        "correct_exact_result": 1,
-        "login": "Kadeo",
-        "points": 9
-      },
-      {
-        "correct_exact_result": 1,
-        "login": "tomek.kowalczyk",
-        "points": 8
-      },
-      {
-        "correct_exact_result": 1,
-        "login": "banan",
-        "points": 8
-      },
-      {
-        "correct_exact_result": 1,
-        "login": "jaca",
-        "points": 8
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "ssaczu",
-        "points": 6
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "dawid.grabka",
-        "points": 6
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "bartek.grabacki",
-        "points": 6
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "andrzej.stopka",
-        "points": 5
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "dery",
-        "points": 5
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "mateusz.tokarski",
-        "points": 5
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "konrad.pazdan",
-        "points": 5
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "fan_gruzji",
-        "points": 5
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "synowie_albionu",
-        "points": 5
-      },
-      {
-        "correct_exact_result": 0,
-        "login": "wrobel",
-        "points": 4
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedUsers = await getUsersToScoreboard();
+        setOthersUsers(fetchedUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
       }
-    ]
+    }
+    fetchData();
+  }, []);
 
-  // const userFirstPlace = othersUsers[0];
-  // const userSecondPlace = othersUsers[1];
-  // const userThirdPlace = othersUsers[2];
-  // const remainingUsers = othersUsers.slice(3);
+  // const userArr = 
+  //   [
+  //     {
+  //       "correct_exact_result": 1,
+  //       "login": "dzordzo",
+  //       "points": 9
+  //     },
+  //     {
+  //       "correct_exact_result": 1,
+  //       "login": "Kadeo",
+  //       "points": 9
+  //     },
+  //     {
+  //       "correct_exact_result": 1,
+  //       "login": "tomek.kowalczyk",
+  //       "points": 8
+  //     },
+  //     {
+  //       "correct_exact_result": 1,
+  //       "login": "banan",
+  //       "points": 8
+  //     },
+  //     {
+  //       "correct_exact_result": 1,
+  //       "login": "jaca",
+  //       "points": 8
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "ssaczu",
+  //       "points": 6
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "dawid.grabka",
+  //       "points": 6
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "bartek.grabacki",
+  //       "points": 6
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "andrzej.stopka",
+  //       "points": 5
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "dery",
+  //       "points": 5
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "mateusz.tokarski",
+  //       "points": 5
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "konrad.pazdan",
+  //       "points": 5
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "fan_gruzji",
+  //       "points": 5
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "synowie_albionu",
+  //       "points": 5
+  //     },
+  //     {
+  //       "correct_exact_result": 0,
+  //       "login": "wrobel",
+  //       "points": 4
+  //     }
+  //   ]
 
-  const userFirstPlace = userArr[0];
-  const userSecondPlace = userArr[1];
-  const userThirdPlace = userArr[2];
-  const remainingUsers = userArr.slice(3);
+  const userFirstPlace = othersUsers[0];
+  const userSecondPlace = othersUsers[1];
+  const userThirdPlace = othersUsers[2];
+  const remainingUsers = othersUsers.slice(3);
+
+  // const userFirstPlace = userArr[0];
+  // const userSecondPlace = userArr[1];
+  // const userThirdPlace = userArr[2];
+  // const remainingUsers = userArr.slice(3);
 
   return (
     <div className="flex flex-col items-center">
