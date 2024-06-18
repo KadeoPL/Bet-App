@@ -5,6 +5,7 @@ import MobileNav from "../components/MobileNav"
 import logoHorizontal from "../img/icons/eurobet24_logo_horizontal.svg"
 import userAvatar from "../img/avatars/avatar_1.png"
 import { FaArrowRight } from "react-icons/fa6";
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const { user } = useContext(UserContext);
@@ -29,10 +30,6 @@ export default function Home() {
     };
   }, []);
 
-  const handleClick = (() => {
-
-  })
-
   return (
     <>
       {/* <SidebarNav /> */}
@@ -55,10 +52,18 @@ export default function Home() {
         </div>
         <div className='mt-5'>
           <h1 className='font-bold text-xl text-white'>Menu</h1>
-          <div className='flex flex-row items-center justify-between bg-yellow px-4 py-3 mt-5 rounded-xl' onClick={handleClick}>
+          <Link to="">
+          <div className='flex flex-row items-center justify-between border-2 border-white text-white px-4 py-3 mt-5 rounded-xl font-bold hover:bg-yellow hover:text-blue hover:border-yellow'>
+            <p>Dzisiejsze mecze</p>
+            <FaArrowRight />
+          </div>
+          </Link>
+          <Link to="/PreviousMatches">
+          <div className='flex flex-row items-center justify-between border-2 border-white text-white px-4 py-3 mt-5 rounded-xl font-bold hover:bg-yellow hover:text-blue hover:border-yellow'>
             <p>Poprzednie mecze</p>
             <FaArrowRight />
           </div>
+          </Link>
         </div>
       </div>
     </>
