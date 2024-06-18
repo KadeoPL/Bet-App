@@ -4,6 +4,7 @@ import { getUserPoints } from '../services/userService';
 import MobileNav from "../components/MobileNav"
 import logoHorizontal from "../img/icons/eurobet24_logo_horizontal.svg"
 import userAvatar from "../img/avatars/avatar_1.png"
+import { FaArrowRight } from "react-icons/fa6";
 
 export default function Home() {
   const { user } = useContext(UserContext);
@@ -28,6 +29,10 @@ export default function Home() {
     };
   }, []);
 
+  const handleClick = (() => {
+
+  })
+
   return (
     <>
       {/* <SidebarNav /> */}
@@ -46,6 +51,13 @@ export default function Home() {
           <div className='flex flex-row items-center mt-4'>
             <div className='text-white mr-3'>Twoja liczba punktów: </div>
             <div className='bg-white font-bold rounded-lg px-4 py-2 text-xl'>{userPoints}</div>
+          </div>
+        </div>
+        <div className='mt-5'>
+          <h1 className='font-bold text-xl text-white'>Menu</h1>
+          <div className='flex flex-row items-center justify-between bg-yellow px-4 py-3 mt-5 rounded-xl' onClick={handleClick}>
+            <p>Poprzednie mecze</p>
+            <FaArrowRight />
           </div>
         </div>
       </div>
