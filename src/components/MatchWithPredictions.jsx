@@ -53,11 +53,11 @@ export default function MatchWithPredictions({ matchData, predictionData }) {
     function onSubmit(event) {
         event.preventDefault();
 
-        if (!prediction.team_one_goals || !prediction.team_two_goals || prediction.result === null) {
-            setErrorMessage('Wszystkie pola muszą być wypełnione.');
-            return;
-        }
-    
+        // if (!prediction.team_one_goals || !prediction.team_two_goals || prediction.result === null) {
+        //     setErrorMessage('Wszystkie pola muszą być wypełnione.');
+        //     return;
+        // }
+        
         if (!isStartMatch) {
             setLoadingText('Wysyłanie...');
             setIsLoading(true);

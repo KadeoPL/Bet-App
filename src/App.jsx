@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Scoreboard from './pages/Scoreboard';
 import Matches from './pages/Matches';
 import MatchInfo from './pages/MatchInfo';
+import PreviousMatches from './pages/PreviousMatches'
 
 function App() {
   const { user } = useContext(UserContext);
@@ -18,6 +19,7 @@ function App() {
         <Route path="/Home" element={<Home />} />
         <Route path="/Matches" element={<Matches />} />
         <Route path="/MatchInfo" element={<MatchInfo />} />
+        <Route path="/PreviousMatches" element={<PreviousMatches />} />
       </Routes>
     </Router>
   );

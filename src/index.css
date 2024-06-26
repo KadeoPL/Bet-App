@@ -1,62 +1,30 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Teko:wght@300..700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Custom styles for number inputs */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+  @apply appearance-none m-0;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield;
+  @apply appearance-none;
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+  @apply box-border;
 }
 
-.nav-container {
-  background-color: #FDC904;
-  height: 60px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.icon-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 30px;
-}
-
-.icon-container {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
+/* Custom utility classes */
 .icon-container.active {
-  background-color: #143CD8;
-  color: #FDC904;
-  border-radius: 50%;
-  padding: 5px;
-  transform: translateY(-15px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  @apply bg-blue text-yellow rounded-full p-1.5 transform translate-y-[-3.75rem] shadow-md;
 }
 
 .menu-text {
-  margin-top: 3px;
-  font-size: 12px;
-  transition: color 0.3s ease;
+  @apply mt-1 text-xs transition-colors;
 }
-
